@@ -28,11 +28,17 @@ class card{
 public:
     card() {
         suit = cardSuit::SPADE;
-        v= 0;
+        v= 1;
+        //Name = "ACE";
     }
     card(cardSuit s, pips p){
         suit = s;
         v = p;
+//        if (v.get_pips() == 1){Name = "ACE";}
+//        else if (v.get_pips()== 11){Name =  "JACK";}
+//        else if (v.get_pips()== 12){Name =  "QUEEN";}
+//        else if (v.get_pips()== 13){Name =  "KING";}
+//        //else{Name = v.get_pips();}
     };
     friend std::ostream& operator<<(std::ostream& out, const card& c);
     cardSuit get_suit() const {return suit;}
@@ -41,6 +47,7 @@ public:
 private:
     cardSuit suit;
     pips v;
+    //std::string Name;
 };
 
 class cardDeck{
@@ -57,12 +64,12 @@ public:
         unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
         std::shuffle(deck.begin(),deck.end(),std::default_random_engine(seed));
     }
-    void printDeck(){
+    void printDeck()  {
         for (auto i = deck.begin(); i!= deck.end(); i++ ){
             std::cout<< *i << std::endl;
         }
     }
-    int getDeckSize(){
+    int getDeckSize()  {
         return deck.size();
     }
     void addOnefullDeck(){
@@ -85,6 +92,13 @@ public:
 private:
     std::vector<card> deck;
 
+};
+
+class playerHand{
+public:
+    playerHand(){}
+private:
+    std::vector<std::vector<card>> DealtCards;
 };
 
 class cardGame{
