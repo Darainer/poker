@@ -55,22 +55,25 @@ public:
         std::shuffle(deck.begin(),deck.end(),std::default_random_engine(seed));
     }
     void dealnewGame(int numberofPlayers, int numberofCardsInHand){
-        if(numberofCardsInHand*numberofPlayers<= 52){
+        if(numberofCardsInHand*numberofPlayers>= 52){
             std::cout<< "need a bigger deck bro"<< std::endl; // todo: maybe use two decks in this case?
             return;
         }
 
-        newDeck();
         shuffleDeck();
+        
+        for(int n =0; n != numberofPlayers;n++) {
+            PlayerHands.emplace_back();
+        }
 
-        for (int i = 1; i!= numberofCardsInHand; i++){
-            for(int p = 1; i!= numberofPlayers; p++){
-
+        for (int i = 0; i!= numberofCardsInHand; i++){
+            for(int p = 0; p!= numberofPlayers; p++){
                 card& currentcard = deck.back();
-
+                PlayerHands[p].emplace_back(currentcard);
+                deck.pop_back();
             }
         }
-        deck.pop_back();
+    std::cout<< "after dealing, deck size is "<< deck.size()<< std::endl;
     }
     std::vector<card> showdeck() const {
         return deck; }
