@@ -4,7 +4,6 @@
 
 #ifndef POKER_POKER_H
 #define POKER_POKER_H
-
 #endif //POKER_POKER_H
 
 #include <iostream>
@@ -47,13 +46,32 @@ private:
 class cardDeck{
 public:
     cardDeck(){
-        deal();
+        newDeck();
+        //PlayerHands{0};
+
     }
     void shuffleDeck(){
         unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
         std::shuffle(deck.begin(),deck.end(),std::default_random_engine(seed));
     }
-    void sortDeck(){}
+    void dealnewGame(int numberofPlayers, int numberofCardsInHand){
+        if(numberofCardsInHand*numberofPlayers<= 52){
+            std::cout<< "need a bigger deck bro"<< std::endl; // todo: maybe use two decks in this case?
+            return;
+        }
+
+        newDeck();
+        shuffleDeck();
+
+        for (int i = 1; i!= numberofCardsInHand; i++){
+            for(int p = 1; i!= numberofPlayers; p++){
+
+                card& currentcard = deck.back();
+
+            }
+        }
+        deck.pop_back();
+    }
     std::vector<card> showdeck() const {
         return deck; }
     void printDeck(){
@@ -63,18 +81,17 @@ public:
     }
 private:
     std::vector<card> deck;
-    void deal(){
-        cardSuit suity = cardSuit::CLUB;
-        for (int mesuit = 1; mesuit<=4; mesuit++){
-
-            if (mesuit == 1){suity = cardSuit::DIAMOND;}
-            else if(mesuit ==2){suity= cardSuit::CLUB;}
-            else if(mesuit ==3){suity= cardSuit::HEART;}
-            else if(mesuit ==4){suity= cardSuit::SPADE;}
-
+    std::vector<std::vector<card>> PlayerHands;
+    void newDeck(){
+        cardSuit currentSuit = cardSuit::CLUB;
+        for (int suitIterator = 1; suitIterator<=4; suitIterator++){
+            if (suitIterator == 1){currentSuit = cardSuit::DIAMOND;}
+            else if(suitIterator ==2){currentSuit= cardSuit::CLUB;}
+            else if(suitIterator ==3){currentSuit= cardSuit::HEART;}
+            else if(suitIterator ==4){currentSuit= cardSuit::SPADE;}
             for (int i = 1;i<= 13;i++){
-                deck.emplace_back(card(suity, i));
-        }
+                deck.emplace_back(card(currentSuit, i));
+            }
         }
     }
 };
