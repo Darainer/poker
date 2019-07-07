@@ -77,9 +77,9 @@ public:
             }
         }
     }
-    card dealOneCard(std::vector<card> &newhome){
+    card dealOneCard(std::vector<card> &destinationHand){
         card dealme = deck.back();   //todo: learn about move semantics and get rid of the temp copy
-        newhome.emplace_back(dealme);
+        destinationHand.emplace_back(dealme);
         deck.pop_back();
     }
 private:
@@ -92,22 +92,25 @@ public:
     cardGame(){
         numberofPlayers = 4;
         numberofCards = 5;
+        for(int n =0; n != numberofPlayers;n++) {
+            PlayerHands.emplace_back();
+        }
     }
     cardGame(int inputnumberofPlayers, int inNumberofCards){
         numberofPlayers = inputnumberofPlayers;
         numberofCards = inNumberofCards;
+        for(int n =0; n != numberofPlayers;n++) {
+            PlayerHands.emplace_back();
+        }
     }
     void dealnewGame(){
         int numberofCardsNeeded= numberofCards*numberofPlayers;
-        while(numberofCardsNeeded>= Deck.getDeckSize()){
-            std::cout<< "need a bigger deck bro"<< std::endl; // todo: maybe use two decks in this case?
+        while(numberofCardsNeeded >= Deck.getDeckSize()){
+            std::cout<< "need a bigger deck bro"<< std::endl;
             Deck.addOnefullDeck();
         }
         Deck.shuffleDeck();
 
-        for(int n =0; n != numberofPlayers;n++) {
-            PlayerHands.emplace_back();
-        }
 
         for (int i = 0; i!= numberofCards; i++){
             for(int p = 0; p!= numberofPlayers; p++){
