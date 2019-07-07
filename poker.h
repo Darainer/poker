@@ -46,46 +46,26 @@ private:
 class cardDeck{
 public:
     cardDeck(){
-        newDeck();
-        //PlayerHands{0};
-
+        addOnefullDeck();
+    }
+    cardDeck(int numberOfDecks){
+        for(int i = 0; i!= numberOfDecks; i++){
+            addOnefullDeck();
+        }
     }
     void shuffleDeck(){
         unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
         std::shuffle(deck.begin(),deck.end(),std::default_random_engine(seed));
     }
-    void dealnewGame(int numberofPlayers, int numberofCardsInHand){
-        if(numberofCardsInHand*numberofPlayers>= 52){
-            std::cout<< "need a bigger deck bro"<< std::endl; // todo: maybe use two decks in this case?
-            return;
-        }
-
-        shuffleDeck();
-        
-        for(int n =0; n != numberofPlayers;n++) {
-            PlayerHands.emplace_back();
-        }
-
-        for (int i = 0; i!= numberofCardsInHand; i++){
-            for(int p = 0; p!= numberofPlayers; p++){
-                card& currentcard = deck.back();
-                PlayerHands[p].emplace_back(currentcard);
-                deck.pop_back();
-            }
-        }
-    std::cout<< "after dealing, deck size is "<< deck.size()<< std::endl;
-    }
-    std::vector<card> showdeck() const {
-        return deck; }
     void printDeck(){
         for (auto i = deck.begin(); i!= deck.end(); i++ ){
             std::cout<< *i << std::endl;
         }
     }
-private:
-    std::vector<card> deck;
-    std::vector<std::vector<card>> PlayerHands;
-    void newDeck(){
+    int getDeckSize(){
+        return deck.size();
+    }
+    void addOnefullDeck(){
         cardSuit currentSuit = cardSuit::CLUB;
         for (int suitIterator = 1; suitIterator<=4; suitIterator++){
             if (suitIterator == 1){currentSuit = cardSuit::DIAMOND;}
@@ -97,6 +77,50 @@ private:
             }
         }
     }
+    card dealOneCard(std::vector<card> &newhome){
+        card dealme = deck.back();   //todo: learn about move semantics and get rid of the temp copy
+        newhome.emplace_back(dealme);
+        deck.pop_back();
+    }
+private:
+    std::vector<card> deck;
+
+};
+
+class cardGame{
+public:
+    cardGame(){
+        numberofPlayers = 4;
+        numberofCards = 5;
+    }
+    cardGame(int inputnumberofPlayers, int inNumberofCards){
+        numberofPlayers = inputnumberofPlayers;
+        numberofCards = inNumberofCards;
+    }
+    void dealnewGame(){
+        int numberofCardsNeeded= numberofCards*numberofPlayers;
+        while(numberofCardsNeeded>= Deck.getDeckSize()){
+            std::cout<< "need a bigger deck bro"<< std::endl; // todo: maybe use two decks in this case?
+            Deck.addOnefullDeck();
+        }
+        Deck.shuffleDeck();
+
+        for(int n =0; n != numberofPlayers;n++) {
+            PlayerHands.emplace_back();
+        }
+
+        for (int i = 0; i!= numberofCards; i++){
+            for(int p = 0; p!= numberofPlayers; p++){
+                Deck.dealOneCard(PlayerHands[p]);
+            }
+        }
+        std::cout<< "after dealing, deck size is "<< Deck.getDeckSize() << std::endl;
+    }
+private:
+    cardDeck Deck;   //todo: using more than one deck
+    std::vector<std::vector<card>> PlayerHands;
+    int numberofPlayers;
+    int numberofCards;  //default for poker
 };
 
 std::ostream& operator<<(std::ostream& out, const pips& p){
