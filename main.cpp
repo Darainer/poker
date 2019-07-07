@@ -8,10 +8,10 @@ int main() {
 
     for (auto i = itsabigdeck.begin(); i!= itsabigdeck.end(); i++ ){
         std::cout<< *i << std::endl;
-        cardSuit s = (*i).get_suit();
-        //a static_cast<string> s
-        //std::cout<< s << std::endl;
     }
 
+    mydeck.shuffleDeck();
+    std::cout<< "gave it a shuffle"<< std::endl;
+    mydeck.printDeck();
     return 0;
 }

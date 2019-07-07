@@ -9,14 +9,16 @@
 
 #include <iostream>
 #include <vector>
+#include <algorithm>    // std::shuffle
+#include <random>       // std::default_random_engine
+#include <chrono>       // std::chrono::system_clock
 
 enum class cardSuit: int {HEART, SPADE, CLUB, DIAMOND };
 
 class pips{
 public:
     pips(): v(0){}
-    pips(int val):v(val){
-    }
+    pips(int val):v(val){}
     friend std::ostream& operator<<(std::ostream& out, const pips& p);
     int get_pips(){return v;}
 private:
@@ -33,7 +35,6 @@ public:
         suit = s;
         v = p;
     };
-
     friend std::ostream& operator<<(std::ostream& out, const card& c);
     cardSuit get_suit() const {return suit;}
     pips get_pips() const {return v;}
@@ -48,9 +49,18 @@ public:
     cardDeck(){
         deal();
     }
+    void shuffleDeck(){
+        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+        std::shuffle(deck.begin(),deck.end(),std::default_random_engine(seed));
+    }
+    void sortDeck(){}
     std::vector<card> showdeck() const {
         return deck; }
-
+    void printDeck(){
+        for (auto i = deck.begin(); i!= deck.end(); i++ ){
+            std::cout<< *i << std::endl;
+        }
+    }
 private:
     std::vector<card> deck;
     void deal(){
@@ -62,7 +72,7 @@ private:
             else if(mesuit ==3){suity= cardSuit::HEART;}
             else if(mesuit ==4){suity= cardSuit::SPADE;}
 
-            for (int i = 1;i<= 14;i++){
+            for (int i = 1;i<= 13;i++){
                 deck.emplace_back(card(suity, i));
         }
         }
@@ -87,7 +97,6 @@ std::ostream& operator<<(std::ostream& out, const cardSuit& suit){
     else{}
     return out;
 }
-
 
 std::ostream& operator<<(std::ostream& out, const card& c){
     std::cout << c.v << c.suit;
