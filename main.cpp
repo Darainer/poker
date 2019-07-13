@@ -3,7 +3,7 @@
 
 int main() {
 
-    poker::cardGame mygame;
+    poker::cardGame mygame(15, 7);
     mygame.dealnewPokerGame();
     mygame.PrintHands();
 

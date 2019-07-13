@@ -157,18 +157,18 @@ namespace poker {
     private:
         void CheckforStraight() {
             SortbyPips();
-            isStraight = true;
+            hasStraight = true;
             for (auto i = DealtCards.begin(); i != DealtCards.end() - 1; i++) {
                 if ((*i).get_pips() != ((*(i + 1)).get_pips() + 1)) {
-                    isStraight = false;
+                    hasStraight = false;
                 }
             }
         }
         void CheckforFlush() {}
-        bool isFlush;
-        bool isStraight;
-        bool isPair;
-        bool isRoyalFlush;
+        bool hasFlush;
+        bool hasStraight;
+        bool hasPair;
+        bool hasRoyalFlush;
     };
 
     class cardGame {
@@ -176,16 +176,12 @@ namespace poker {
         cardGame() {
             numberofPlayers = 4;
             numberofCards = 5;
-            for (int n = 0; n != numberofPlayers; n++) {
-                PlayerHands.emplace_back();
-            }
+            setup();
         }
         cardGame(int inputnumberofPlayers, int inNumberofCards) {
             numberofPlayers = inputnumberofPlayers;
             numberofCards = inNumberofCards;
-            for (int n = 0; n != numberofPlayers; n++) {
-                PlayerHands.emplace_back();
-            }
+            setup();
         }
         void dealnewPokerGame() {
             int numberofCardsNeeded = numberofCards * numberofPlayers;
@@ -216,6 +212,11 @@ namespace poker {
             PlayerHands[0].CalculatePokerScore();
         }
     private:
+        void setup(){
+            for (int n = 0; n != numberofPlayers; n++) {
+                PlayerHands.emplace_back();
+            }
+        }
         cardDeck Deck;   //todo: using more than one deck
         std::vector<playerHand> PlayerHands;
         int numberofPlayers;
