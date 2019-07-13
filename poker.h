@@ -13,36 +13,54 @@
 #include <chrono>       // std::chrono::system_clock
 
 enum class cardSuit: int {HEART, SPADE, CLUB, DIAMOND };
+//std::string property;
+
+//auto sortRuleLambda = [ property] (const card& Card1, const card& Card2) -> bool
+//{
+//    if(property == "pips")
+//        return Card1.get_pips() < Card2.get_pips();
+//    elseif(property == "suit")
+//    return Card1.get_suit() < Card2.get_suit();
+//};
+
 
 class pips{
 public:
     pips(): v(0){}
     pips(int val):v(val){}
     friend std::ostream& operator<<(std::ostream& out, const pips& p);
-    int get_pips(){return v;}
+    int get_pips_value() const {return v;}
 private:
     int v;
 };
+
+/*struct CompareCards{
+        int property;
+        CompareCards(int property) {this->property = property;}
+        bool operator()(const card& Card1, const card& Card2) const {
+            if(property == pips)
+                return Card1.get_pips() < Card2.get_pips();
+            elseif(property == suit)
+                return Card1.get_suit() < Card2.get_suit();
+                //todo since suit is still a complex type, need to overload operator< to compare it
+        }
+
+
+};*/
 
 class card{
 public:
     card() {
         suit = cardSuit::SPADE;
         v= 1;
-        //Name = "ACE";
     }
     card(cardSuit s, pips p){
         suit = s;
         v = p;
-//        if (v.get_pips() == 1){Name = "ACE";}
-//        else if (v.get_pips()== 11){Name =  "JACK";}
-//        else if (v.get_pips()== 12){Name =  "QUEEN";}
-//        else if (v.get_pips()== 13){Name =  "KING";}
-//        //else{Name = v.get_pips();}
     };
     friend std::ostream& operator<<(std::ostream& out, const card& c);
-    cardSuit get_suit() const {return suit;}
-    pips get_pips() const {return v;}
+    cardSuit get_suit()  {return suit;}
+    int get_pips() const {return v.get_pips_value();}
     void set_pips(int vin){v= vin;}
 private:
     cardSuit suit;
@@ -97,8 +115,16 @@ private:
 class playerHand{
 public:
     playerHand(){}
-private:
-    std::vector<std::vector<card>> DealtCards;
+    void SortbyPips(){
+        std::sort(DealtCards.begin(),DealtCards.end(),[](const card& Card1, const card& Card2){return Card1.get_pips() < Card2.get_pips();} );
+    }
+    void printHand(){
+        for (auto i = DealtCards.begin(); i!= DealtCards.end(); i++ ){
+            std::cout<< *i << std::endl;
+        }
+    }
+    std::vector<card> DealtCards;
+
 };
 
 class cardGame{
@@ -128,14 +154,19 @@ public:
 
         for (int i = 0; i!= numberofCards; i++){
             for(int p = 0; p!= numberofPlayers; p++){
-                Deck.dealOneCard(PlayerHands[p]);
+                Deck.dealOneCard(PlayerHands[p].DealtCards);
             }
         }
         std::cout<< "after dealing, deck size is "<< Deck.getDeckSize() << std::endl;
     }
+    void PrintHands(){
+        PlayerHands[0].printHand();
+        PlayerHands[0].SortbyPips();
+        PlayerHands[0].printHand();
+    }
 private:
     cardDeck Deck;   //todo: using more than one deck
-    std::vector<std::vector<card>> PlayerHands;
+    std::vector<playerHand> PlayerHands;
     int numberofPlayers;
     int numberofCards;  //default for poker
 };

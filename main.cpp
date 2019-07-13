@@ -5,6 +5,7 @@ int main() {
 
     cardGame mygame;
     mygame.dealnewGame();
+    mygame.PrintHands();
 
 
     return 0;
