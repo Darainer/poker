@@ -13,16 +13,6 @@
 #include <chrono>       // std::chrono::system_clock
 
 enum class cardSuit: int {HEART, SPADE, CLUB, DIAMOND };
-//std::string property;
-
-//auto sortRuleLambda = [ property] (const card& Card1, const card& Card2) -> bool
-//{
-//    if(property == "pips")
-//        return Card1.get_pips() < Card2.get_pips();
-//    elseif(property == "suit")
-//    return Card1.get_suit() < Card2.get_suit();
-//};
-
 
 class pips{
 public:
@@ -33,20 +23,6 @@ public:
 private:
     int v;
 };
-
-/*struct CompareCards{
-        int property;
-        CompareCards(int property) {this->property = property;}
-        bool operator()(const card& Card1, const card& Card2) const {
-            if(property == pips)
-                return Card1.get_pips() < Card2.get_pips();
-            elseif(property == suit)
-                return Card1.get_suit() < Card2.get_suit();
-                //todo since suit is still a complex type, need to overload operator< to compare it
-        }
-
-
-};*/
 
 class card{
 public:
@@ -59,7 +35,7 @@ public:
         v = p;
     };
     friend std::ostream& operator<<(std::ostream& out, const card& c);
-    cardSuit get_suit()  {return suit;}
+    cardSuit get_suit() const {return suit;}
     int get_pips() const {return v.get_pips_value();}
     void set_pips(int vin){v= vin;}
 private:
@@ -118,10 +94,14 @@ public:
     void SortbyPips(){
         std::sort(DealtCards.begin(),DealtCards.end(),[](const card& Card1, const card& Card2){return Card1.get_pips() < Card2.get_pips();} );
     }
+    void SortbySuit(){
+        std::sort(DealtCards.begin(),DealtCards.end(),[](const card& Card1, const card& Card2){return Card1.get_suit() < Card2.get_suit();} );
+    }
     void printHand(){
         for (auto i = DealtCards.begin(); i!= DealtCards.end(); i++ ){
             std::cout<< *i << std::endl;
         }
+        std::cout <<std::endl;
     }
     std::vector<card> DealtCards;
 
@@ -160,6 +140,8 @@ public:
         std::cout<< "after dealing, deck size is "<< Deck.getDeckSize() << std::endl;
     }
     void PrintHands(){
+        PlayerHands[0].printHand();
+        PlayerHands[0].SortbySuit();
         PlayerHands[0].printHand();
         PlayerHands[0].SortbyPips();
         PlayerHands[0].printHand();
