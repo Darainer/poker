@@ -44,6 +44,9 @@ private:
     //std::string Name;
 };
 
+auto SortCardsbypips = [](const card& Card1, const card& Card2) -> bool {return Card1.get_pips() < Card2.get_pips();};
+auto SortCardsbySuit =[](const card& Card1, const card& Card2)-> bool {return Card1.get_suit() < Card2.get_suit();};
+
 class cardDeck{
 public:
     cardDeck(){
@@ -92,10 +95,10 @@ class playerHand{
 public:
     playerHand(){}
     void SortbyPips(){
-        std::sort(DealtCards.begin(),DealtCards.end(),[](const card& Card1, const card& Card2){return Card1.get_pips() < Card2.get_pips();} );
+        std::sort(DealtCards.begin(),DealtCards.end(), SortCardsbypips );
     }
     void SortbySuit(){
-        std::sort(DealtCards.begin(),DealtCards.end(),[](const card& Card1, const card& Card2){return Card1.get_suit() < Card2.get_suit();} );
+        std::sort(DealtCards.begin(),DealtCards.end(), SortCardsbySuit );
     }
     void printHand(){
         for (auto i = DealtCards.begin(); i!= DealtCards.end(); i++ ){
@@ -139,11 +142,11 @@ public:
         }
         std::cout<< "after dealing, deck size is "<< Deck.getDeckSize() << std::endl;
     }
-    void PrintHands(){
-        PlayerHands[0].printHand();
-        PlayerHands[0].SortbySuit();
+    void PrintHands(){        //test function
         PlayerHands[0].printHand();
         PlayerHands[0].SortbyPips();
+        PlayerHands[0].printHand();
+        PlayerHands[0].SortbySuit();
         PlayerHands[0].printHand();
     }
 private:
