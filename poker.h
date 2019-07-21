@@ -20,7 +20,7 @@ namespace poker {
     public:
         pips() : v(0) {}
 
-        pips(int val) : v(val) {}
+        pips(int val)  : v(val) {}
 
         friend std::ostream &operator<<(std::ostream &out, const pips &p);
 
@@ -77,6 +77,8 @@ namespace poker {
     }
     auto SortCardsbypips = [](const card &Card1, const card &Card2) -> bool {
         return Card1.get_pips() < Card2.get_pips();};
+    auto CardsEqualbypips = [](const card &Card1, const card &Card2) ->bool {
+        return Card1.get_pips() == Card2.get_pips();};
     auto SortCardsbySuit = [](const card &Card1, const card &Card2) -> bool {
         return Card1.get_suit() < Card2.get_suit();};
 
@@ -95,8 +97,8 @@ namespace poker {
             std::shuffle(deck.begin(), deck.end(), std::default_random_engine(seed));
         }
         void printDeck() {
-            for (auto i = deck.begin(); i != deck.end(); i++) {
-                std::cout << *i << std::endl;
+            for (auto i: deck){ //.begin(); i != deck.end(); i++) {
+                std::cout << i << std::endl;
             }
         }
         int getDeckSize() {
@@ -128,7 +130,10 @@ namespace poker {
     class playerHand {
     public:
         playerHand() {
-
+            hasPair = false;
+            hasFlush = false;
+            hasRoyalFlush = false;
+            hasStraight = false;
         }
 
         void SortbyPips() {
@@ -139,36 +144,48 @@ namespace poker {
             std::sort(DealtCards.begin(), DealtCards.end(), SortCardsbySuit);
         }
 
-        void CalculatePokerScore() {
+        void Calculate5CardPokerScore() {
             CheckforStraight();
-            //CheckforPair();
+            CheckforPair();
         }
 
         void printHand() {
-            for (auto i = DealtCards.begin(); i != DealtCards.end(); i++) {
-                std::cout << *i << std::endl;
+            for (auto i : DealtCards){          //(auto i = DealtCards.begin(); i != DealtCards.end(); i++) {
+                std::cout << i << std::endl;
             }
             std::cout << std::endl;
         }
 
         std::vector<card> DealtCards;
         std::vector<int> Score;
-
+        bool hasFlush;
+        bool hasStraight;
+        bool hasPair;
+        bool hasRoyalFlush;
     private:
         void CheckforStraight() {
             SortbyPips();
             hasStraight = true;
             for (auto i = DealtCards.begin(); i != DealtCards.end() - 1; i++) {
-                if ((*i).get_pips() != ((*(i + 1)).get_pips() + 1)) {
+                if ((*i).get_pips()+ 1 != ((*(i + 1)).get_pips() )) {
                     hasStraight = false;
                 }
             }
         }
+        void CheckforPair() {
+            SortbyPips();
+            // for each unique pips, count the elements with the same
+            // three of a kind, 4 of a kind
+            hasPair = false;
+            //int uniquepips = std::count (DealtCards.begin(),DealtCards.end(),CardsEqualbypips);
+            for (auto i = DealtCards.begin(); i != DealtCards.end() ; i++) {
+                if ((*i).get_pips() == ((*(i + 1)).get_pips())) {
+                    hasPair = true;
+                }
+            }
+        }
         void CheckforFlush() {}
-        bool hasFlush;
-        bool hasStraight;
-        bool hasPair;
-        bool hasRoyalFlush;
+
     };
 
     class cardGame {
@@ -200,7 +217,7 @@ namespace poker {
         }
         void calculatePokerScore(){
             for(auto i= PlayerHands.begin();i!= PlayerHands.end();i++){
-                (*i).CalculatePokerScore();
+                (*i).Calculate5CardPokerScore();
             }
         }
         void PrintHands() {        //test function
@@ -209,7 +226,7 @@ namespace poker {
             PlayerHands[0].printHand();
             PlayerHands[0].SortbySuit();
             PlayerHands[0].printHand();
-            PlayerHands[0].CalculatePokerScore();
+            PlayerHands[0].Calculate5CardPokerScore();
         }
     private:
         void setup(){
@@ -217,7 +234,7 @@ namespace poker {
                 PlayerHands.emplace_back();
             }
         }
-        cardDeck Deck;   //todo: using more than one deck
+        cardDeck Deck;
         std::vector<playerHand> PlayerHands;
         int numberofPlayers;
         int numberofCards;  //default for poker
