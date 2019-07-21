@@ -147,6 +147,9 @@ namespace poker {
         void Calculate5CardPokerScore() {
             CheckforStraight();
             CheckforPair();
+            CheckforFlush();
+            CheckforStraightFlush();
+            CheckForRoyalFlush();
         }
 
         void printHand() {
@@ -161,6 +164,7 @@ namespace poker {
         bool hasFlush;
         bool hasStraight;
         bool hasPair;
+        bool hasStraightFlush;
         bool hasRoyalFlush;
     private:
         void CheckforStraight() {
@@ -184,8 +188,31 @@ namespace poker {
                 }
             }
         }
-        void CheckforFlush() {}
+        void CheckforFlush() {
+            hasFlush = true;
+            for (auto i = DealtCards.begin(); i != DealtCards.end() - 1; i++) {
+                if ((*i).get_suit() != ((*(i + 1)).get_suit() )) {
+                    hasFlush = false;
+                }
+            }
 
+        }
+        void CheckforStraightFlush(){
+            CheckforStraight();
+            CheckforFlush();
+            if (hasStraight && hasFlush){
+                hasStraightFlush = true;
+            }
+            else { hasStraightFlush = false;}
+        }
+        void CheckForRoyalFlush(){
+            int minpips = 9; //jack
+            CheckforFlush();
+            SortbyPips();
+            if ((DealtCards.front().get_pips() >= minpips) && hasFlush){
+                hasRoyalFlush= true;
+            }
+        }
     };
 
     class cardGame {
