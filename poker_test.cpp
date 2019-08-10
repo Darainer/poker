@@ -6,7 +6,6 @@
 
 TEST(PlayerHand_StraightTest, HandlesZeroInput) {
     poker::playerHand TestStraight;
-
     for(int i = 0; i!= 5; i++) {
         TestStraight.DealtCards.emplace_back(poker::card(poker::cardSuit::SPADE, poker::pips(i)));
     }
@@ -24,34 +23,42 @@ TEST(PlayerHand_SimplePairTest, HandlesZeroInput) {
         TestPair.Calculate5CardPokerScore();
         EXPECT_EQ(TestPair.hasPair, true);
     }
-
 }
 
 TEST(PlayerHand_FlushTest, HandlesZeroInput) {
     poker::playerHand testHand;
-
     testHand.DealtCards.emplace_back(poker::card(poker::cardSuit::SPADE, poker::pips(0)));
     testHand.DealtCards.emplace_back(poker::card(poker::cardSuit::SPADE, poker::pips(2)));
     testHand.DealtCards.emplace_back(poker::card(poker::cardSuit::SPADE, poker::pips(4)));
     testHand.DealtCards.emplace_back(poker::card(poker::cardSuit::SPADE, poker::pips(7)));
     testHand.DealtCards.emplace_back(poker::card(poker::cardSuit::SPADE, poker::pips(10)));
-
     testHand.Calculate5CardPokerScore();
     EXPECT_EQ(testHand.hasFlush, true);
     EXPECT_EQ(testHand.hasPair, false);
     EXPECT_EQ(testHand.hasStraight, false);
+}
 
+TEST(PlayerHand_Straight_NoFlushTest, HandlesZeroInput) {
+    poker::playerHand testHand;
+    testHand.DealtCards.emplace_back(poker::card(poker::cardSuit::SPADE, poker::pips(2)));
+    testHand.DealtCards.emplace_back(poker::card(poker::cardSuit::SPADE, poker::pips(3)));
+    testHand.DealtCards.emplace_back(poker::card(poker::cardSuit::HEART, poker::pips(4)));
+    testHand.DealtCards.emplace_back(poker::card(poker::cardSuit::SPADE, poker::pips(5)));
+    testHand.DealtCards.emplace_back(poker::card(poker::cardSuit::DIAMOND, poker::pips(6)));
+    testHand.Calculate5CardPokerScore();
+    EXPECT_EQ(testHand.hasFlush, false);
+    EXPECT_EQ(testHand.hasPair, false);
+    EXPECT_EQ(testHand.hasStraight, true);
+    EXPECT_EQ(testHand.hasRoyalFlush,false);
 }
 
 TEST(PlayerHand_RoyalFlushTest, HandlesZeroInput) {
     poker::playerHand testHand;
-
     testHand.DealtCards.emplace_back(poker::card(poker::cardSuit::SPADE, poker::pips(9)));
     testHand.DealtCards.emplace_back(poker::card(poker::cardSuit::SPADE, poker::pips(10)));
     testHand.DealtCards.emplace_back(poker::card(poker::cardSuit::SPADE, poker::pips(11)));
     testHand.DealtCards.emplace_back(poker::card(poker::cardSuit::SPADE, poker::pips(12)));
     testHand.DealtCards.emplace_back(poker::card(poker::cardSuit::SPADE, poker::pips(13)));
-
     testHand.Calculate5CardPokerScore();
     EXPECT_EQ(testHand.hasFlush, true);
     EXPECT_EQ(testHand.hasPair, false);

@@ -1,16 +1,16 @@
 #include "poker.h"
 // this can be the card game
-
+using namespace poker;
 int main() {
 
-    poker::cardGame mygame(4, 5);
-    mygame.dealnewPokerGame();
+    cardGame mygame(4, 5);
+    mygame.dealNewPokerGame();
     mygame.PrintHands();
 
 
-    poker::playerHand TestFlush;
-    for(int i = 0; i!= 5; i++) {
-        TestFlush.DealtCards.emplace_back(poker::card(poker::cardSuit::SPADE, poker::pips(i)));
+    playerHand TestFlush;
+    for (int i = 0; i != 5; i++) {
+        TestFlush.DealtCards.emplace_back(card(cardSuit::SPADE, pips(i)));
     }
     TestFlush.Calculate5CardPokerScore();
     return 0;

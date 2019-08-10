@@ -20,11 +20,13 @@ namespace poker {
     public:
         pips() : v(0) {}
 
-        pips(int val)  : v(val) {}
+        explicit pips(int val)  : v(val) {}
 
         friend std::ostream &operator<<(std::ostream &out, const pips &p);
 
         int get_pips_value() const { return v; }
+
+        int set_pips_value(int val) { v = val;}
 
     private:
         int v;
@@ -33,13 +35,17 @@ namespace poker {
     public:
         card() {
             suit = cardSuit::SPADE;
-            v = 1;
+            v = pips(1);
         }
 
         card(cardSuit s, pips p) {
             suit = s;
             v = p;
         };
+        card(cardSuit s, int pips){
+            suit = s;
+            v.set_pips_value(pips);
+        }
 
         friend std::ostream &operator<<(std::ostream &out, const card &c);
 
@@ -47,7 +53,7 @@ namespace poker {
 
         int get_pips() const { return v.get_pips_value(); }
 
-        void set_pips(int vin) { v = vin; }
+        void set_pips(int vin) { v.set_pips_value(vin); }
 
     private:
         cardSuit suit;
@@ -87,7 +93,7 @@ namespace poker {
         cardDeck() {
             addOnefullDeck();
         }
-        cardDeck(int numberOfDecks) {
+        explicit cardDeck(int numberOfDecks) {
             for (int i = 0; i != numberOfDecks; i++) {
                 addOnefullDeck();
             }
@@ -134,6 +140,8 @@ namespace poker {
             hasFlush = false;
             hasRoyalFlush = false;
             hasStraight = false;
+            hasStraightFlush = false;
+            score = -1;
         }
 
         void SortbyPips() {
@@ -160,12 +168,13 @@ namespace poker {
         }
 
         std::vector<card> DealtCards;
-        std::vector<int> Score;
+        int score;
         bool hasFlush;
         bool hasStraight;
         bool hasPair;
         bool hasStraightFlush;
         bool hasRoyalFlush;
+
     private:
         void CheckforStraight() {
             SortbyPips();
@@ -195,15 +204,11 @@ namespace poker {
                     hasFlush = false;
                 }
             }
-
         }
         void CheckforStraightFlush(){
             CheckforStraight();
             CheckforFlush();
-            if (hasStraight && hasFlush){
-                hasStraightFlush = true;
-            }
-            else { hasStraightFlush = false;}
+            hasStraightFlush = hasStraight && hasFlush ? true : false;
         }
         void CheckForRoyalFlush(){
             int minpips = 9; //jack
@@ -214,7 +219,6 @@ namespace poker {
             }
         }
     };
-
     class cardGame {
     public:
         cardGame() {
@@ -227,7 +231,7 @@ namespace poker {
             numberofCards = inNumberofCards;
             setup();
         }
-        void dealnewPokerGame() {
+        void dealNewPokerGame() {
             int numberofCardsNeeded = numberofCards * numberofPlayers;
             while (numberofCardsNeeded >= Deck.getDeckSize()) {
                 std::cout << "need to size up the deck bro" << std::endl;
