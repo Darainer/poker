@@ -87,7 +87,6 @@ namespace poker {
         return Card1.get_pips() == Card2.get_pips();};
     auto SortCardsbySuit = [](const card &Card1, const card &Card2) -> bool {
         return Card1.get_suit() < Card2.get_suit();};
-
     class cardDeck {
     public:
         cardDeck() {
@@ -103,10 +102,11 @@ namespace poker {
             std::shuffle(deck.begin(), deck.end(), std::default_random_engine(seed));
         }
         void printDeck() {
-            for (auto i: deck){ //.begin(); i != deck.end(); i++) {
+            for (auto i: deck){ //deck.begin(); i != deck.end(); i++) {
                 std::cout << i << std::endl;
             }
         }
+
         int getDeckSize() {
             return deck.size();
         }
@@ -158,6 +158,7 @@ namespace poker {
             CheckforFlush();
             CheckforStraightFlush();
             CheckForRoyalFlush();
+            CalculateScore();
         }
 
         void printHand() {
@@ -166,6 +167,7 @@ namespace poker {
             }
             std::cout << std::endl;
         }
+
 
         std::vector<card> DealtCards;
         int score;
@@ -218,7 +220,24 @@ namespace poker {
                 hasRoyalFlush= true;
             }
         }
+        int GetHighCard(){
+            std::vector<card>::iterator result;
+            result = std::max_element(DealtCards.begin(), DealtCards.end(), SortCardsbypips);
+            return (*result).get_pips();
+        };
+        void CalculateScore(){
+            if(hasRoyalFlush){score= 17;}
+            else if(hasStraightFlush){score = 16;}
+            else if(hasStraight){score= 15;}
+            else if(hasPair){score = 14;}
+            else{
+                SortbyPips();
+                score = GetHighCard();  // score for the high card is the score
+            }
+        }
     };
+    auto SorthandbyValue = [](const playerHand &Hand1, const playerHand &Hand2) -> bool {
+        return Hand1.score < Hand2.score;};
     class cardGame {
     public:
         cardGame() {
@@ -250,6 +269,19 @@ namespace poker {
             for(auto i= PlayerHands.begin();i!= PlayerHands.end();i++){
                 (*i).Calculate5CardPokerScore();
             }
+
+            for(auto i= PlayerHands.begin();i!= PlayerHands.end();i++){
+                (*i).Calculate5CardPokerScore();
+            }
+        }
+        void printPokerScores(){
+            for(auto i= PlayerHands.begin(); i!= PlayerHands.end();i++){
+                (*i).printHand();
+                std::cout << "score "<<(*i).score<< std::endl;
+            }
+        }
+        void SortHandsbyScores(){
+            std::sort(PlayerHands.begin(), PlayerHands.end(),SorthandbyValue);
         }
         void PrintHands() {        //test function
             PlayerHands[0].printHand();
@@ -258,6 +290,8 @@ namespace poker {
             PlayerHands[0].SortbySuit();
             PlayerHands[0].printHand();
             PlayerHands[0].Calculate5CardPokerScore();
+            SortHandsbyScores();
+            printPokerScores();
         }
     private:
         void setup(){

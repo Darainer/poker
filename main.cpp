@@ -5,6 +5,7 @@ int main() {
 
     cardGame mygame(4, 5);
     mygame.dealNewPokerGame();
+    mygame.calculatePokerScore();
     mygame.PrintHands();
 
 

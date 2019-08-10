@@ -12,6 +12,18 @@ TEST(PlayerHand_StraightTest, HandlesZeroInput) {
     TestStraight.Calculate5CardPokerScore();
     EXPECT_EQ(TestStraight.hasStraight, true);
 }
+TEST(PlayerHand_PairTest, HandlesZeroInput) {
+    poker::playerHand TestPair;
+    int value;
+    int max_pips = 13; //king
+    TestPair.DealtCards.emplace_back(poker::card(poker::cardSuit::SPADE, poker::pips(0)));
+    TestPair.DealtCards.emplace_back(poker::card(poker::cardSuit::HEART, poker::pips(0)));
+    TestPair.DealtCards.emplace_back(poker::card(poker::cardSuit::CLUB, poker::pips(3)));
+    TestPair.DealtCards.emplace_back(poker::card(poker::cardSuit::DIAMOND, poker::pips(1)));
+    TestPair.DealtCards.emplace_back(poker::card(poker::cardSuit::SPADE, poker::pips(2)));
+    TestPair.Calculate5CardPokerScore();
+    EXPECT_EQ(TestPair.hasPair, true);
+}
 
 TEST(PlayerHand_SimplePairTest, HandlesZeroInput) {
     poker::playerHand TestPair;
@@ -65,6 +77,19 @@ TEST(PlayerHand_RoyalFlushTest, HandlesZeroInput) {
     EXPECT_EQ(testHand.hasStraight, true);
     EXPECT_EQ(testHand.hasRoyalFlush,true);
 }
+
+// tests for the game
+
+TEST(Game_ScoreTest, HandlesZeroInput) {
+    poker::cardGame TestGame(5,5);
+
+
+    TestGame.calculatePokerScore();
+    TestGame.PrintHands();
+
+    //EXPECT_EQ(TestGame.PrintHands(), true);
+}
+
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
