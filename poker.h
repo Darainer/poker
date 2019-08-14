@@ -19,13 +19,9 @@ namespace poker {
     class pips {
     public:
         pips() : v(0) {}
-
         explicit pips(int val)  : v(val) {}
-
         friend std::ostream &operator<<(std::ostream &out, const pips &p);
-
         int get_pips_value() const { return v; }
-
         int set_pips_value(int val) { v = val;}
 
     private:
@@ -48,11 +44,8 @@ namespace poker {
         }
 
         friend std::ostream &operator<<(std::ostream &out, const card &c);
-
         cardSuit get_suit() const { return suit; }
-
         int get_pips() const { return v.get_pips_value(); }
-
         void set_pips(int vin) { v.set_pips_value(vin); }
 
     private:
@@ -210,7 +203,7 @@ namespace poker {
         void CheckforStraightFlush(){
             CheckforStraight();
             CheckforFlush();
-            hasStraightFlush = hasStraight && hasFlush ? true : false;
+            hasStraightFlush = hasStraight && hasFlush;
         }
         void CheckForRoyalFlush(){
             int minpips = 9; //jack
