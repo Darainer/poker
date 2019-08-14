@@ -13,6 +13,6 @@ int main() {
     for (int i = 0; i != 5; i++) {
         TestFlush.DealtCards.emplace_back(card(cardSuit::SPADE, pips(i)));
     }
-    TestFlush.Calculate5CardPokerScore();
+    TestFlush.calculate5CardPokerScore();
     return 0;
 }
