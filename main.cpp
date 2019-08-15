@@ -11,7 +11,7 @@ int main() {
 
     playerHand TestFlush;
     for (int i = 0; i != 5; i++) {
-        TestFlush.DealtCards.emplace_back(card(cardSuit::SPADE, pips(i)));
+        TestFlush.takeCardFromDeck(card(cardSuit::SPADE, pips(i)));
     }
     TestFlush.calculate5CardPokerScore();
     return 0;
