@@ -14,6 +14,7 @@
 #include "poker.h"
 
 using namespace poker;
+
 pips::pips() : v(0) {}
 pips::pips(int val)  {v = val; }
 int pips::get_pips_value() const { return v; }
@@ -100,14 +101,13 @@ card cardDeck::dealOneCard(std::vector<card> &destinationHand) {
     deck.pop_back();
 }
 
-
 playerHand::playerHand() {
-    hasPair = false;
-    hasFlush = false;
-    hasRoyalFlush = false;
-    hasStraight = false;
-    hasStraightFlush = false;
-    score = -1;
+    HandInfo.hasPair = false;
+    HandInfo.hasFlush = false;
+    HandInfo.hasRoyalFlush = false;
+    HandInfo.hasStraight = false;
+    HandInfo.hasStraightFlush = false;
+    HandInfo.score = -1;
 }
 void playerHand::sortByPips() {
     std::sort(DealtCards.begin(), DealtCards.end(), SortCardsByPips);
@@ -125,7 +125,7 @@ void playerHand::calculate5CardPokerScore() {
 }
 int const playerHand::getPokerScore(){
     calculate5CardPokerScore();
-    return score;
+    return HandInfo.score;
 }
 void playerHand::takeCardFromDeck(card NewCard){
     DealtCards.emplace_back(NewCard);
@@ -138,10 +138,10 @@ void playerHand::printHand() {
 }
 void playerHand::checkForStraight() {
     sortByPips();
-    hasStraight = true;
+    HandInfo.hasStraight = true;
     for (auto i = DealtCards.begin(); i != DealtCards.end() - 1; i++) {
         if ((*i).get_pips()+ 1 != ((*(i + 1)).get_pips() )) {
-            hasStraight = false;
+            HandInfo.hasStraight = false;
         }
     }
 }
@@ -149,33 +149,33 @@ void playerHand::checkForPair() {
     sortByPips();
     // for each unique pips, count the elements with the same
     // three of a kind, 4 of a kind
-    hasPair = false;
+    HandInfo.hasPair = false;
     //int uniquePips = std::count (DealtCards.begin(),DealtCards.end(),CardsEqualByPips);
     for (auto i = DealtCards.begin(); i != DealtCards.end() ; i++) {
         if ((*i).get_pips() == ((*(i + 1)).get_pips())) {
-            hasPair = true;
+            HandInfo.hasPair = true;
         }
     }
 }
 void playerHand::checkForFlush() {
-    hasFlush = true;
+    HandInfo.hasFlush = true;
     for (auto i = DealtCards.begin(); i != DealtCards.end() - 1; i++) {
         if ((*i).get_suit() != ((*(i + 1)).get_suit() )) {
-            hasFlush = false;
+            HandInfo.hasFlush = false;
         }
     }
 }
 void playerHand::checkForStraightFlush(){
     checkForStraight();
     checkForFlush();
-    hasStraightFlush = hasStraight && hasFlush;
+    HandInfo.hasStraightFlush = HandInfo.hasStraight && HandInfo.hasFlush;
 }
 void playerHand::checkForRoyalFlush(){
     int minPips = 9; //jack
     checkForFlush();
     sortByPips();
-    if ((DealtCards.front().get_pips() >= minPips) && hasFlush){
-        hasRoyalFlush= true;
+    if ((DealtCards.front().get_pips() >= minPips) && HandInfo.hasFlush){
+        HandInfo.hasRoyalFlush= true;
     }
 }
 int playerHand::getHighCard(){
@@ -183,20 +183,19 @@ int playerHand::getHighCard(){
     result = std::max_element(DealtCards.begin(), DealtCards.end(), SortCardsByPips);
     return (*result).get_pips();
 }
+PlayerHandInfo const playerHand::CheckHand(){
+    return HandInfo;
+}
 void playerHand::calculateScore(){
-    if(hasRoyalFlush){score= 17;}
-    else if(hasStraightFlush){score = 16;}
-    else if(hasStraight){score= 15;}
-    else if(hasPair){score = 14;}
+    if(HandInfo.hasRoyalFlush){HandInfo.score= 17;}
+    else if(HandInfo.hasStraightFlush){HandInfo.score = 16;}
+    else if(HandInfo.hasStraight){HandInfo.score= 15;}
+    else if(HandInfo.hasPair){HandInfo.score = 14;}
     else{
         sortByPips();
-        score = getHighCard();  // score for the high card is the score
+        HandInfo.score = getHighCard();  // score for the high card is the score
     }
 }
-
-auto sortHandByValue = []( playerHand &Hand1, playerHand &Hand2) -> bool {  //todo should be const, find out why it gives error
-    return Hand1.getPokerScore() < Hand2.getPokerScore();};
-
 
 cardGame::cardGame() {
     numberOfPlayers = 4;
@@ -232,6 +231,9 @@ void cardGame::calculatePokerScore(){
         (*i).calculate5CardPokerScore();
     }
 }
+
+
+
 void cardGame::printPokerScores(){
     for(auto i= PlayerHands.begin(); i!= PlayerHands.end();i++){
         (*i).printHand();
@@ -251,7 +253,6 @@ void cardGame::PrintHands() {        //test function
     SortHandsByScores();
     printPokerScores();
 }
-
 void cardGame::setup(){
     for (int n = 0; n != numberOfPlayers; n++) {
         PlayerHands.emplace_back();

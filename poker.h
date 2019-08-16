@@ -13,6 +13,16 @@
 #include <chrono>       // std::chrono::system_clock
 
 namespace poker {
+
+    struct PlayerHandInfo{
+        bool score;
+        bool hasFlush;
+        bool hasStraight;
+        bool hasPair;
+        bool hasStraightFlush;
+        bool hasRoyalFlush;
+    };
+
     enum class cardSuit : int {
         HEART, SPADE, CLUB, DIAMOND
     };
@@ -81,16 +91,11 @@ namespace poker {
         void takeCardFromDeck(card NewCard);
 
         void printHand();
+        PlayerHandInfo const CheckHand();
         std::vector<card> DealtCards;  //todo make private
+
     private:
-
-        int score;
-        bool hasFlush;
-        bool hasStraight;
-        bool hasPair;
-        bool hasStraightFlush;
-        bool hasRoyalFlush;
-
+        PlayerHandInfo HandInfo;
         void checkForStraight();
         void checkForPair();
         void checkForFlush();
