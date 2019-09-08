@@ -115,7 +115,7 @@ void playerHand::sortByPips() {
 void playerHand::sortBySuit() {
     std::sort(DealtCards.begin(), DealtCards.end(), sortCardsBySuit);
 }
-void playerHand::calculate5CardPokerScore() {
+void const playerHand::calculate5CardPokerScore() {
     checkForStraight();
     checkForPair();
     checkForFlush();
@@ -139,12 +139,12 @@ void playerHand::printHand() {
 void playerHand::checkForStraight() {
     sortByPips();
     HandInfo.hasStraight = true;
-    for (auto i = DealtCards.begin(); i != DealtCards.end() - 1; i++) {
-        if ((*i).get_pips()+ 1 != ((*(i + 1)).get_pips() )) {
+    for (auto i = DealtCards.begin(); i != DealtCards.end() - 1; i++) {   // todo: look for a way to remove the pointer arithmatic from this code?
+        if ((*i).get_pips()+ 1 != ( (*(i + 1)).get_pips() ))
             HandInfo.hasStraight = false;
         }
-    }
 }
+
 void playerHand::checkForPair() {
     sortByPips();
     // for each unique pips, count the elements with the same

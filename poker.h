@@ -15,7 +15,7 @@
 namespace poker {
 
     struct PlayerHandInfo{
-        bool score;
+        int score;
         bool hasFlush;
         bool hasStraight;
         bool hasPair;
@@ -84,7 +84,7 @@ namespace poker {
 
         void sortBySuit();
 
-        void calculate5CardPokerScore();
+        void const calculate5CardPokerScore();
 
         int const getPokerScore();
 
@@ -105,7 +105,7 @@ namespace poker {
         void calculateScore();
     };
 
-    auto sortHandByValue = []( playerHand &Hand1, playerHand &Hand2) -> bool {  //todo should be const, find out why it gives error
+    auto const sortHandByValue = []( playerHand &Hand1, playerHand &Hand2) -> bool {  //todo should be const, find out why it gives error
         return Hand1.getPokerScore() < Hand2.getPokerScore();};
 
     class cardGame {
