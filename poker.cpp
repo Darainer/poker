@@ -139,12 +139,12 @@ void playerHand::printHand() {
 void playerHand::checkForStraight() {
     sortByPips();
     HandInfo.hasStraight = true;
-    for (auto i = DealtCards.begin(); i != DealtCards.end() - 1; i++) {   // todo: look for a way to remove the pointer arithmatic from this code?
-        if ((*i).get_pips()+ 1 != ( (*(i + 1)).get_pips() ))
+    for (auto i = DealtCards.begin();
+         i != DealtCards.end() - 1; i++) {   // todo: look for a way to remove the pointer arithmatic from this code?
+        if ((*i).get_pips() + 1 != ((*(i + 1)).get_pips()))
             HandInfo.hasStraight = false;
         }
 }
-
 void playerHand::checkForPair() {
     sortByPips();
     // for each unique pips, count the elements with the same
@@ -196,6 +196,11 @@ void playerHand::calculateScore(){
         HandInfo.score = getHighCard();  // score for the high card is the score
     }
 }
+
+auto const sortHandByValue = [](playerHand &Hand1,
+                                playerHand &Hand2) -> bool {  //todo should be const, find out why it gives error
+    return Hand1.getPokerScore() < Hand2.getPokerScore();
+};
 
 cardGame::cardGame() {
     numberOfPlayers = 4;

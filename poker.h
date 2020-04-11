@@ -23,7 +23,7 @@ namespace poker {
         bool hasRoyalFlush;
     };
 
-    enum class cardSuit : int {
+    enum struct cardSuit : int {
         HEART, SPADE, CLUB, DIAMOND
     };
     class pips {
@@ -105,8 +105,8 @@ namespace poker {
         void calculateScore();
     };
 
-    auto const sortHandByValue = []( playerHand &Hand1, playerHand &Hand2) -> bool {  //todo should be const, find out why it gives error
-        return Hand1.getPokerScore() < Hand2.getPokerScore();};
+    auto const sortHandByValue = [](playerHand const &Hand1,
+                                    playerHand const &Hand2) -> bool {};  //todo should be const, find out why it gives error;
 
     class cardGame {
     public:
