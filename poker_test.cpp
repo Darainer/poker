@@ -94,16 +94,17 @@ TEST(PlayerHand_RoyalFlushTest, HandlesZeroInput) {
 
 TEST(Game_ScoreTest, HandlesZeroInput) {
 
-    playerHand testHand;
-    cardGame testGame(5, 5);
-    testGame.dealNewPokerGame();
 
-    testGame.calculatePokerScore();
-    testGame.PrintHands();
+    int number_of_players{4};
+    int size_of_hand{2};
+    //int size_of_deck{5};
+    cardGame mygame(number_of_players, size_of_hand);
+    mygame.dealNewPokerGame();
+    mygame.calculatePokerScore();
 
-    //EXPECT_EQ(TestGame.PrintHands(), true);
 }
 
+//EXPECT_EQ(TestGame.PrintHands(), true);}
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);

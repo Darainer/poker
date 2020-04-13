@@ -24,7 +24,10 @@ namespace poker {
     };
 
     enum struct cardSuit : int {
-        HEART, SPADE, CLUB, DIAMOND
+        HEART,
+        SPADE,
+        CLUB,
+        DIAMOND
     };
     class pips {
     public:
@@ -51,6 +54,7 @@ namespace poker {
         cardSuit suit;
         pips v;
     };
+
 //    std::ostream &operator<<(std::ostream &out, const pips &p);
 //    std::ostream &operator<<(std::ostream &out, const cardSuit &suit) ;
 //    std::ostream &operator<<(std::ostream &out, const card &c);
@@ -60,16 +64,14 @@ namespace poker {
         return Card1.get_pips() == Card2.get_pips();};
     auto sortCardsBySuit = [](const card &Card1, const card &Card2) -> bool {
         return Card1.get_suit() < Card2.get_suit();};
+
     class cardDeck {
     public:
         cardDeck();
         explicit cardDeck(int numberOfDecks);
         void shuffleDeck();
-        void printDeck();
-
         int getDeckSize();
         void addOneFullDeck();
-
         card dealOneCard(std::vector<card> &destinationHand);
 
     private:
@@ -79,17 +81,14 @@ namespace poker {
     class playerHand {
     public:
         playerHand();
-
         void sortByPips();
-
         void sortBySuit();
 
-        void const calculate5CardPokerScore();
+        void calculate5CardPokerScore();
 
-        int const getPokerScore();
+        int getPokerScore() const;
 
         void takeCardFromDeck(card NewCard);
-
         void printHand();
         PlayerHandInfo const CheckHand();
         std::vector<card> DealtCards;  //todo make private
@@ -114,14 +113,19 @@ namespace poker {
         cardGame(int inputNumberOfPlayers, int inNumberOfCards);
         void dealNewPokerGame();
         void calculatePokerScore();
-        void printPokerScores();
+
+        void printPokerScores() const;
         void SortHandsByScores();
         void PrintHands();
     private:
         void setup();
         cardDeck Deck;
+        std::vector<card> board;
         std::vector<playerHand> PlayerHands;
-        int numberOfPlayers;
-        int numberOfCards;  //default for poker
+        int numberOfPlayers{2};
+        int numberOfCards{2};  //default for texas hold em poker
+        int board_size{5};
+
+        void PrintBoard();
     };
 }
