@@ -15,6 +15,14 @@ void Fixture_straightFlush(playerHand &hand, cardSuit suit) {
     hand.DealtCards.emplace_back(card(suit, pips(13)));
 }
 
+void Fixture_royalFlush(playerHand &hand, cardSuit suit) {
+    hand.DealtCards.emplace_back(card(suit, pips(1)));
+    hand.DealtCards.emplace_back(card(suit, pips(10)));
+    hand.DealtCards.emplace_back(card(suit, pips(11)));
+    hand.DealtCards.emplace_back(card(suit, pips(12)));
+    hand.DealtCards.emplace_back(card(suit, pips(13)));
+}
+
 
 TEST(PlayerHand_StraightTest, HandlesZeroInput) {
     playerHand TestStraight;
@@ -24,6 +32,8 @@ TEST(PlayerHand_StraightTest, HandlesZeroInput) {
     TestStraight.calculate5CardPokerScore();
     PlayerHandInfo HandInfo = TestStraight.CheckHand();
     EXPECT_EQ(HandInfo.hasStraight, true);
+    EXPECT_EQ(HandInfo.hasStraightFlush, false);
+    EXPECT_EQ(HandInfo.hasFlush, false);
 }
 TEST(PlayerHand_PairTest, HandlesZeroInput) {
     playerHand TestPair;
@@ -81,7 +91,7 @@ TEST(PlayerHand_Straight_NoFlushTest, HandlesZeroInput) {
 
 TEST(PlayerHand_RoyalFlushTest, HandlesZeroInput) {
     playerHand testHand;
-    Fixture_straightFlush(testHand, cardSuit::CLUB);
+    Fixture_royalFlush(testHand, cardSuit::CLUB);
     testHand.calculate5CardPokerScore();
     PlayerHandInfo HandInfo = testHand.CheckHand();
     EXPECT_EQ(HandInfo.hasFlush, true);
@@ -94,14 +104,13 @@ TEST(PlayerHand_RoyalFlushTest, HandlesZeroInput) {
 
 TEST(Game_ScoreTest, HandlesZeroInput) {
 
-
     int number_of_players{4};
-    int size_of_hand{2};
+    int size_of_hand{5};
     //int size_of_deck{5};
     cardGame mygame(number_of_players, size_of_hand);
-    mygame.dealNewPokerGame();
     mygame.calculatePokerScore();
-
+    mygame.SortHandsByScores();
+    mygame.printPokerScores();
 }
 
 //EXPECT_EQ(TestGame.PrintHands(), true);}

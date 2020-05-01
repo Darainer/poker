@@ -14,15 +14,6 @@
 
 namespace poker {
 
-    struct PlayerHandInfo{
-        int score;
-        bool hasFlush;
-        bool hasStraight;
-        bool hasPair;
-        bool hasStraightFlush;
-        bool hasRoyalFlush;
-    };
-
     enum struct cardSuit : int {
         HEART,
         SPADE,
@@ -53,6 +44,39 @@ namespace poker {
     private:
         cardSuit suit;
         pips v;
+    };
+
+    enum struct CombinationRank : int {
+        HighCard,
+        Pair,
+        Straight,
+        Flush,
+        StraightFlush,
+        RoyalFlush
+    };
+
+    struct Combination {
+        Combination(CombinationRank rank, int mepips);
+
+        CombinationRank combination;
+        int combinationpipsvalue;
+    };
+
+    struct PlayerHandInfo {
+        std::vector<Combination> HandCombinations;
+        int score;
+//        card* High_card{nullptr};
+        bool hasPair;
+        int CombinationHighCardPips;
+//        card* pair_card{nullptr};
+        bool hasFlush;
+//        card* Flush_Highcard{nullptr};
+        bool hasStraight;
+//        card* straight_Highcard{nullptr};
+        bool hasStraightFlush;
+//        card* straightFlush_Highcard{nullptr};
+        bool hasRoyalFlush;
+//        card* RoyalFlush_Highcard{nullptr};
     };
 
 //    std::ostream &operator<<(std::ostream &out, const pips &p);
@@ -104,21 +128,21 @@ namespace poker {
         void calculateScore();
     };
 
-    auto const sortHandByValue = [](playerHand const &Hand1,
-                                    playerHand const &Hand2) -> bool {};  //todo should be const, find out why it gives error;
+    //auto const sortHandByValue = [](playerHand const &Hand1, playerHand const &Hand2) -> bool ;  //todo should be const, find out why it gives error;
 
     class cardGame {
     public:
         cardGame();
         cardGame(int inputNumberOfPlayers, int inNumberOfCards);
-        void dealNewPokerGame();
+
+        cardGame(std::vector<playerHand> inputhands);
         void calculatePokerScore();
 
         void printPokerScores() const;
         void SortHandsByScores();
         void PrintHands();
     private:
-        void setup();
+        void setup_new_game();
         cardDeck Deck;
         std::vector<card> board;
         std::vector<playerHand> PlayerHands;
