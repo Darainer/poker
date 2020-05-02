@@ -24,7 +24,7 @@ void Fixture_royalFlush(playerHand &hand, cardSuit suit) {
 }
 
 
-TEST(PlayerHand_StraightTest, HandlesZeroInput) {
+TEST(PlayerHand_StraightFlushTest, HandlesZeroInput) {
     playerHand TestStraight;
     for(int i = 0; i!= 5; i++) {
         TestStraight.DealtCards.emplace_back(card(cardSuit::SPADE, pips(i)));
@@ -32,8 +32,8 @@ TEST(PlayerHand_StraightTest, HandlesZeroInput) {
     TestStraight.calculate5CardPokerScore();
     PlayerHandInfo HandInfo = TestStraight.CheckHand();
     EXPECT_EQ(HandInfo.hasStraight, true);
-    EXPECT_EQ(HandInfo.hasStraightFlush, false);
-    EXPECT_EQ(HandInfo.hasFlush, false);
+    EXPECT_EQ(HandInfo.hasStraightFlush, true);
+    EXPECT_EQ(HandInfo.hasFlush, true);
 }
 TEST(PlayerHand_PairTest, HandlesZeroInput) {
     playerHand TestPair;

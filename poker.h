@@ -107,9 +107,7 @@ namespace poker {
         playerHand();
         void sortByPips();
         void sortBySuit();
-
         void calculate5CardPokerScore();
-
         int getPokerScore() const;
 
         void takeCardFromDeck(card NewCard);

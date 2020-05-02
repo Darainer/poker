@@ -144,7 +144,7 @@ void playerHand::checkForPair() {
         if ((*i).get_pips() == ((*(i + 1)).get_pips())) {
             HandInfo.hasPair = true;
             Combination pair(CombinationRank::Pair, (*i).get_pips());
-            HandInfo.HandCombinations.push_back(pair);
+            HandInfo.HandCombinations.emplace_back(pair);
         }
     }
 }
@@ -154,47 +154,58 @@ void playerHand::checkForFlush() {
          i != DealtCards.end() - 1; i++) {   // todo: look for a way to remove the pointer arithmatic from this code?
         if ((*i).get_suit() != ((*(i + 1)).get_suit()))
             HandInfo.hasFlush = false;
-        return;
+            return;
+        }
     }
     HandInfo.hasFlush = true;
     Combination flush(CombinationRank::Flush, DealtCards.at(DealtCards.size() - 1).get_pips());  //high card
-    HandInfo.HandCombinations.push_back(flush);
+    HandInfo.HandCombinations.emplace_back(flush);
 }
 
 void playerHand::checkForStraight() {
     sortByPips();       //todo deal with ace high and low in searching for straight
-    for (auto i = DealtCards.begin();
-         i != DealtCards.end() - 1; i++) {   // todo: look for a way to remove the pointer arithmatic from this code?
-        if ((*i).get_pips() + 1 != ((*(i + 1)).get_pips()))
-            HandInfo.hasStraight = false;
-        return;
-    }
-
 
     HandInfo.hasStraight = true;
-    Combination straight(CombinationRank::Straight, DealtCards.at(DealtCards.size() - 1).get_pips());
-    HandInfo.HandCombinations.push_back(straight);
+
+    if (DealtCards.front().get_pips() == 1 && DealtCards.back().get_pips() == 13) {    //only ace high straight possible
+        for (auto i = DealtCards.begin() + 1; i != DealtCards.end() - 1; i++) {
+            if ((*i).get_pips() + 1 != ((*(i + 1)).get_pips()))
+                HandInfo.hasStraight = false;
+            break;
+        }
+        Combination straight(CombinationRank::Straight, 14);  //high ace
+        HandInfo.HandCombinations.emplace_back(straight);
+    } else {
+        for (auto i = DealtCards.begin(); i != DealtCards.end() - 1; i++) {               //standard straight
+            if ((*i).get_pips() + 1 != ((*(i + 1)).get_pips())) {
+                HandInfo.hasStraight = false;
+                break;
+            }
+            Combination straight(CombinationRank::Straight, DealtCards.back().get_pips());  //highest card
+            HandInfo.HandCombinations.emplace_back(straight);
+        }
+    }
+
 }
 
 void playerHand::checkForStraightFlush(){
     checkForStraight();
     checkForFlush();
-    HandInfo.hasStraightFlush = HandInfo.hasStraight && HandInfo.hasFlush;
-    Combination straightflush(CombinationRank::StraightFlush,
-                              DealtCards.at(DealtCards.size() - 1).get_pips());  //high card
-    HandInfo.HandCombinations.push_back(straightflush);
+    if (HandInfo.hasStraightFlush = HandInfo.hasStraight && HandInfo.hasFlush) {
+        Combination straightflush(CombinationRank::StraightFlush, DealtCards.back().get_pips());  //high card
+        HandInfo.HandCombinations.push_back(straightflush);
+    }
 }
 void playerHand::checkForRoyalFlush(){
-    int minPips = 10; //jack
+    int minPips = 10;
     checkForFlush();
     sortByPips();
-    if ((DealtCards.front().get_pips() == 0)  // is ace
-        && (DealtCards.at(1).get_pips() >= minPips)
+    if ((DealtCards.front().get_pips() == 1)  // is ace
+        && (DealtCards.at(1).get_pips() == minPips)
         && HandInfo.hasFlush) {
         HandInfo.hasRoyalFlush = true;
-        Combination royalflush(CombinationRank::RoyalFlush,
-                               DealtCards.at(DealtCards.size() - 1).get_pips());  //high card
-        HandInfo.HandCombinations.push_back(royalflush);
+        Combination royalflush(CombinationRank::RoyalFlush, DealtCards.back().get_pips());
+        HandInfo.HandCombinations.emplace_back(royalflush);
     } else {
         HandInfo.hasRoyalFlush = false;
     }
