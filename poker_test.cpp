@@ -37,11 +37,11 @@ TEST(PlayerHand_StraightFlushTest, HandlesZeroInput) {
 }
 TEST(PlayerHand_PairTest, HandlesZeroInput) {
     playerHand TestPair;
-    TestPair.DealtCards.emplace_back(card(cardSuit::SPADE, pips(0)));
-    TestPair.DealtCards.emplace_back(card(cardSuit::HEART, pips(0)));
-    TestPair.DealtCards.emplace_back(card(cardSuit::CLUB, pips(3)));
-    TestPair.DealtCards.emplace_back(card(cardSuit::DIAMOND, pips(1)));
-    TestPair.DealtCards.emplace_back(card(cardSuit::SPADE, pips(2)));
+    TestPair.DealtCards.emplace_back(card(cardSuit::SPADE, pips(1)));
+    TestPair.DealtCards.emplace_back(card(cardSuit::HEART, pips(1)));
+    TestPair.DealtCards.emplace_back(card(cardSuit::CLUB, pips(5)));
+    TestPair.DealtCards.emplace_back(card(cardSuit::DIAMOND, pips(9)));
+    TestPair.DealtCards.emplace_back(card(cardSuit::SPADE, pips(7)));
     TestPair.calculate5CardPokerScore();
     PlayerHandInfo HandInfo = TestPair.CheckHand();
     EXPECT_EQ(HandInfo.hasPair, true);
@@ -98,6 +98,7 @@ TEST(PlayerHand_RoyalFlushTest, HandlesZeroInput) {
     EXPECT_EQ(HandInfo.hasPair, false);
     EXPECT_EQ(HandInfo.hasStraight, true);
     EXPECT_EQ(HandInfo.hasRoyalFlush,true);
+    //EXPECT_EQ(testHand.getPokerScore(), (63 + 13));
 }
 
 // tests for the game

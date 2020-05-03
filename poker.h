@@ -11,6 +11,7 @@
 #include <algorithm>    // std::shuffle
 #include <random>       // std::default_random_engine
 #include <chrono>       // std::chrono::system_clock
+#include <unordered_map>
 
 namespace poker {
 
@@ -49,6 +50,9 @@ namespace poker {
     enum struct CombinationRank : int {
         HighCard,
         Pair,
+        TwoPair,
+        ThreeOfaKind,
+        FourOfaKind,
         Straight,
         Flush,
         StraightFlush,
@@ -62,21 +66,19 @@ namespace poker {
         int combinationpipsvalue;
     };
 
+
     struct PlayerHandInfo {
         std::vector<Combination> HandCombinations;
-        int score;
-//        card* High_card{nullptr};
-        bool hasPair;
-        int CombinationHighCardPips;
-//        card* pair_card{nullptr};
-        bool hasFlush;
-//        card* Flush_Highcard{nullptr};
-        bool hasStraight;
-//        card* straight_Highcard{nullptr};
-        bool hasStraightFlush;
-//        card* straightFlush_Highcard{nullptr};
-        bool hasRoyalFlush;
-//        card* RoyalFlush_Highcard{nullptr};
+        int score{0};
+        bool hasPair{false};
+        bool hasTwoPair{false};
+        bool hasThreeOfaKind{false};
+        bool hasFourOfaKind{false};
+        bool hasFlush{false};
+        bool hasStraight{false};
+        bool hasStraightFlush{false};
+        bool hasRoyalFlush{false};
+
     };
 
 //    std::ostream &operator<<(std::ostream &out, const pips &p);
@@ -117,13 +119,19 @@ namespace poker {
 
     private:
         PlayerHandInfo HandInfo;
+
+        int CalculateCombinationScore(PlayerHandInfo &Handinfo, CombinationRank Rank);
         void checkForStraight();
+
+        void checkallMultiples();
         void checkForPair();
         void checkForFlush();
         void checkForStraightFlush();
         void checkForRoyalFlush();
         int getHighCard();
         void calculateScore();
+
+
     };
 
     //auto const sortHandByValue = [](playerHand const &Hand1, playerHand const &Hand2) -> bool ;  //todo should be const, find out why it gives error;

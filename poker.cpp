@@ -35,9 +35,24 @@ void card::set_pips(int vin) { v.set_pips_value(vin); }
 
 Combination::Combination(poker::CombinationRank rank, int mepips) {
     combination = rank;
-    combinationpipsvalue = mepips;
+    if (mepips == 1) {
+        combinationpipsvalue == 13;   // Ace in the hole
+    } else {
+        combinationpipsvalue = mepips;
+    }
 }
 
+std::unordered_map<CombinationRank, int> CombinationBaseScore{
+        {CombinationRank::HighCard,      0},
+        {CombinationRank::Pair,          14},
+        {CombinationRank::TwoPair,       28},
+        {CombinationRank::ThreeOfaKind,  42},
+        {CombinationRank::FourOfaKind,   56},
+        {CombinationRank::Straight,      70},
+        {CombinationRank::Flush,         84},
+        {CombinationRank::StraightFlush, 98},
+        {CombinationRank::RoyalFlush,    112}
+};
 std::ostream &operator<<(std::ostream &out, const pips &p) {
     if (p.get_pips_value() == 1) { std::cout << "ACE"; }
     else if (p.get_pips_value() == 11) { std::cout << "JACK"; }
@@ -60,6 +75,19 @@ std::ostream &operator<<(std::ostream &out, const card &c) {
     std::cout << c.get_suit();
     return out;
 }
+
+std::ostream &operator<<(std::ostream &out, const CombinationRank &combinationRank) {
+
+    if (combinationRank == CombinationRank::Straight) { std::cout << " Straight "; }
+    else if (combinationRank == CombinationRank::StraightFlush) { std::cout << " StraightFlush "; }
+    else if (combinationRank == CombinationRank::RoyalFlush) { std::cout << " RoyalFlush "; }
+    else if (combinationRank == CombinationRank::Pair) { std::cout << " Pair "; }
+    else if (combinationRank == CombinationRank::Flush) { std::cout << " Flush "; }
+    else if (combinationRank == CombinationRank::HighCard) { std::cout << " HighCard "; }
+    else {}
+    return out;
+}
+
 auto SortCardsByPips = [](const card &Card1, const card &Card2) -> bool {
     return Card1.get_pips() < Card2.get_pips();};
 auto CardsEqualByPips = [](const card &Card1, const card &Card2) ->bool {
@@ -113,8 +141,8 @@ void playerHand::sortBySuit() {
 }
 
 void playerHand::calculate5CardPokerScore() {
-    //find_besthand();
-    checkForPair();
+    sortByPips();
+    checkallMultiples();
     checkForFlush();
     checkForStraight();
     checkForStraightFlush();
@@ -133,26 +161,74 @@ void printCards(const std::vector<card> &Cards) {
     std::cout << std::endl;
 }
 
+void playerHand::checkallMultiples() {
+
+    // four of a kind
+    if (DealtCards.at(0).get_pips() == DealtCards.at(3).get_pips()
+        || DealtCards.at(1).get_pips() == DealtCards.at(4).get_pips()) {
+        HandInfo.hasFourOfaKind == true;
+        HandInfo.hasThreeOfaKind == false;
+        HandInfo.hasTwoPair == false;
+        Combination foursome(CombinationRank::FourOfaKind, DealtCards.at(1).get_pips());
+        HandInfo.HandCombinations.emplace_back(foursome);
+    }
+
+        // three of a kind
+    else if (DealtCards.at(0).get_pips() == DealtCards.at(2).get_pips()
+             || DealtCards.at(1).get_pips() == DealtCards.at(3).get_pips()
+             || DealtCards.at(2).get_pips() == DealtCards.at(4).get_pips()) {
+        HandInfo.hasFourOfaKind == false;
+        HandInfo.hasThreeOfaKind == true;
+        HandInfo.hasTwoPair == false;
+        Combination three(CombinationRank::ThreeOfaKind, DealtCards.at(2).get_pips());
+        HandInfo.HandCombinations.emplace_back(three);
+
+        // two pair
+    } else if (((DealtCards.at(0).get_pips() == DealtCards.at(1).get_pips()) &&
+                (DealtCards.at(2).get_pips() == DealtCards.at(3).get_pips()))
+               || ((DealtCards.at(1).get_pips() == DealtCards.at(2).get_pips()) &&
+                   (DealtCards.at(3).get_pips() == DealtCards.at(4).get_pips()))
+               || ((DealtCards.at(0).get_pips() == DealtCards.at(1).get_pips()) &&
+                   (DealtCards.at(3).get_pips() == DealtCards.at(4).get_pips()))
+            ) {
+        HandInfo.hasFourOfaKind == false;
+        HandInfo.hasThreeOfaKind == false;
+        HandInfo.hasTwoPair == true;
+
+        Combination twopair(CombinationRank::TwoPair, DealtCards.at(4).get_pips());
+        HandInfo.HandCombinations.emplace_back(twopair);
+    }
+
+    //single pair
+    if (HandInfo.hasTwoPair || HandInfo.hasFourOfaKind) {
+        HandInfo.hasPair == false;
+    } else {
+        checkForPair();
+    }
+}
+
 void playerHand::checkForPair() {
-    sortByPips();
-    // for each unique pips, count the elements with the same
-    // three of a kind, 4 of a kind
-    // todo deal with two pairs
-    HandInfo.hasPair = false;
-    //int uniquePips = std::count (DealtCards.begin(),DealtCards.end(),CardsEqualByPips);
     for (auto i = DealtCards.begin(); i != DealtCards.end() - 1; i++) {
         if ((*i).get_pips() == ((*(i + 1)).get_pips())) {
             HandInfo.hasPair = true;
             Combination pair(CombinationRank::Pair, (*i).get_pips());
             HandInfo.HandCombinations.emplace_back(pair);
+            return;
         }
     }
 }
+
 void playerHand::checkForFlush() {
-    sortByPips();
+
+//    cardSuit  first_suit = DealtCards.front().get_suit();
+//    if ( std::all_of(DealtCards.begin(), DealtCards.end(), []( card a_card, cardSuit first_suit){return a_card.get_suit() == first_suit;}) )
+//    {
+//        HandInfo.hasFlush = true;
+//    }
+
     for (auto i = DealtCards.begin();
          i != DealtCards.end() - 1; i++) {   // todo: look for a way to remove the pointer arithmatic from this code?
-        if ((*i).get_suit() != ((*(i + 1)).get_suit()))
+        if ((*i).get_suit() != ((*(i + 1)).get_suit())) {
             HandInfo.hasFlush = false;
             return;
         }
@@ -163,17 +239,15 @@ void playerHand::checkForFlush() {
 }
 
 void playerHand::checkForStraight() {
-    sortByPips();       //todo deal with ace high and low in searching for straight
-
     HandInfo.hasStraight = true;
-
     if (DealtCards.front().get_pips() == 1 && DealtCards.back().get_pips() == 13) {    //only ace high straight possible
         for (auto i = DealtCards.begin() + 1; i != DealtCards.end() - 1; i++) {
-            if ((*i).get_pips() + 1 != ((*(i + 1)).get_pips()))
+            if ((*i).get_pips() + 1 != ((*(i + 1)).get_pips())) {
                 HandInfo.hasStraight = false;
-            break;
+                break;
+            }
         }
-        Combination straight(CombinationRank::Straight, 14);  //high ace
+        Combination straight(CombinationRank::Straight, 13);
         HandInfo.HandCombinations.emplace_back(straight);
     } else {
         for (auto i = DealtCards.begin(); i != DealtCards.end() - 1; i++) {               //standard straight
@@ -181,24 +255,20 @@ void playerHand::checkForStraight() {
                 HandInfo.hasStraight = false;
                 break;
             }
-            Combination straight(CombinationRank::Straight, DealtCards.back().get_pips());  //highest card
+            Combination straight(CombinationRank::Straight, DealtCards.back().get_pips());
             HandInfo.HandCombinations.emplace_back(straight);
         }
     }
-
 }
 
 void playerHand::checkForStraightFlush(){
-    checkForStraight();
-    checkForFlush();
     if (HandInfo.hasStraightFlush = HandInfo.hasStraight && HandInfo.hasFlush) {
         Combination straightflush(CombinationRank::StraightFlush, DealtCards.back().get_pips());  //high card
-        HandInfo.HandCombinations.push_back(straightflush);
+        HandInfo.HandCombinations.emplace_back(straightflush);
     }
 }
 void playerHand::checkForRoyalFlush(){
     int minPips = 10;
-    checkForFlush();
     sortByPips();
     if ((DealtCards.front().get_pips() == 1)  // is ace
         && (DealtCards.at(1).get_pips() == minPips)
@@ -219,32 +289,36 @@ PlayerHandInfo const playerHand::CheckHand(){
     return HandInfo;
 }
 
-int CalculateCombinationScore(PlayerHandInfo &Handinfo, CombinationRank Rank, int basescore) {
+int playerHand::CalculateCombinationScore(PlayerHandInfo &Handinfo, CombinationRank Rank) {
 
     for (auto i : Handinfo.HandCombinations) {
-        Handinfo.score = basescore;
-        if (i.combination == CombinationRank::RoyalFlush) {
-            Handinfo.score += i.combinationpipsvalue;
+        Handinfo.score = CombinationBaseScore[Rank];
+        Handinfo.score += i.combinationpipsvalue;
+        std::cout << "score" << Handinfo.score << "" << i.combination << i.combinationpipsvalue << std::endl;
+        return Handinfo.score;
         }
-    }
 }
 
 void playerHand::calculateScore() {
     if (HandInfo.HandCombinations.size() != 0) {
         if (HandInfo.hasRoyalFlush) {
-            CalculateCombinationScore(HandInfo, CombinationRank::RoyalFlush, 63);
+            CalculateCombinationScore(HandInfo, CombinationRank::RoyalFlush);
         } else if (HandInfo.hasStraightFlush) {
-            CalculateCombinationScore(HandInfo, CombinationRank::StraightFlush, 44);
+            CalculateCombinationScore(HandInfo, CombinationRank::StraightFlush);
         } else if (HandInfo.hasStraight) {
-            CalculateCombinationScore(HandInfo, CombinationRank::Straight, 27);
+            CalculateCombinationScore(HandInfo, CombinationRank::Straight);
+        } else if (HandInfo.hasThreeOfaKind) {
+            CalculateCombinationScore(HandInfo, CombinationRank::ThreeOfaKind);
+        } else if (HandInfo.hasTwoPair) {
+            CalculateCombinationScore(HandInfo, CombinationRank::TwoPair);
         } else if (HandInfo.hasPair) {
-            CalculateCombinationScore(HandInfo, CombinationRank::Pair, 13);
+            CalculateCombinationScore(HandInfo, CombinationRank::Pair);
         }
     } else {
-        sortByPips();
         HandInfo.score = getHighCard();  // score for the high card is the score
     }
 }
+
 
 auto const sortHandByValue = [](playerHand &Hand1,
                                 playerHand &Hand2) -> bool {  //todo should be const, find out why it gives error
