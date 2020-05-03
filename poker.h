@@ -61,11 +61,21 @@ namespace poker {
 
     struct Combination {
         Combination(CombinationRank rank, int mepips);
-
         CombinationRank combination;
-        int combinationpipsvalue;
+        int combinationpipsvalue{0};
     };
 
+    static std::unordered_map<const CombinationRank, const int> CombinationBaseScore{
+            {CombinationRank::HighCard,      0},
+            {CombinationRank::Pair,          15},
+            {CombinationRank::TwoPair,       30},
+            {CombinationRank::ThreeOfaKind,  45},
+            {CombinationRank::FourOfaKind,   60},
+            {CombinationRank::Straight,      75},
+            {CombinationRank::Flush,         90},
+            {CombinationRank::StraightFlush, 105},
+            {CombinationRank::RoyalFlush,    120}
+    };
 
     struct PlayerHandInfo {
         std::vector<Combination> HandCombinations;

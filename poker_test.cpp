@@ -26,7 +26,7 @@ void Fixture_royalFlush(playerHand &hand, cardSuit suit) {
 
 TEST(PlayerHand_StraightFlushTest, HandlesZeroInput) {
     playerHand TestStraight;
-    for(int i = 0; i!= 5; i++) {
+    for (int i = 1; i != 6; i++) {
         TestStraight.DealtCards.emplace_back(card(cardSuit::SPADE, pips(i)));
     }
     TestStraight.calculate5CardPokerScore();
@@ -45,19 +45,7 @@ TEST(PlayerHand_PairTest, HandlesZeroInput) {
     TestPair.calculate5CardPokerScore();
     PlayerHandInfo HandInfo = TestPair.CheckHand();
     EXPECT_EQ(HandInfo.hasPair, true);
-}
-
-TEST(PlayerHand_SimplePairTest, HandlesZeroInput) {
-    playerHand TestPair;
-    int value;
-    int max_pips = 13; //king
-    for (value = 0; value != max_pips+1;value++ ) {
-        TestPair.DealtCards.emplace_back(card(cardSuit::SPADE, pips(value)));
-        TestPair.DealtCards.emplace_back(card(cardSuit::SPADE, pips(value)));
-        TestPair.calculate5CardPokerScore();
-        PlayerHandInfo HandInfo = TestPair.CheckHand();
-        EXPECT_EQ(HandInfo.hasPair, true);
-    }
+    EXPECT_EQ(HandInfo.score, poker::CombinationBaseScore[poker::CombinationRank::Pair] + 14);
 }
 
 TEST(PlayerHand_FlushTest, HandlesZeroInput) {

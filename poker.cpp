@@ -36,23 +36,13 @@ void card::set_pips(int vin) { v.set_pips_value(vin); }
 Combination::Combination(poker::CombinationRank rank, int mepips) {
     combination = rank;
     if (mepips == 1) {
-        combinationpipsvalue == 13;   // Ace in the hole
+        combinationpipsvalue = 14;   // Ace in the hole
     } else {
         combinationpipsvalue = mepips;
     }
 }
 
-std::unordered_map<CombinationRank, int> CombinationBaseScore{
-        {CombinationRank::HighCard,      0},
-        {CombinationRank::Pair,          14},
-        {CombinationRank::TwoPair,       28},
-        {CombinationRank::ThreeOfaKind,  42},
-        {CombinationRank::FourOfaKind,   56},
-        {CombinationRank::Straight,      70},
-        {CombinationRank::Flush,         84},
-        {CombinationRank::StraightFlush, 98},
-        {CombinationRank::RoyalFlush,    112}
-};
+
 std::ostream &operator<<(std::ostream &out, const pips &p) {
     if (p.get_pips_value() == 1) { std::cout << "ACE"; }
     else if (p.get_pips_value() == 11) { std::cout << "JACK"; }
@@ -211,7 +201,7 @@ void playerHand::checkForPair() {
     for (auto i = DealtCards.begin(); i != DealtCards.end() - 1; i++) {
         if ((*i).get_pips() == ((*(i + 1)).get_pips())) {
             HandInfo.hasPair = true;
-            Combination pair(CombinationRank::Pair, (*i).get_pips());
+            Combination pair{CombinationRank::Pair, (*i).get_pips()};
             HandInfo.HandCombinations.emplace_back(pair);
             return;
         }
@@ -289,7 +279,7 @@ PlayerHandInfo const playerHand::CheckHand(){
     return HandInfo;
 }
 
-int playerHand::CalculateCombinationScore(PlayerHandInfo &Handinfo, CombinationRank Rank) {
+int playerHand::CalculateCombinationScore(PlayerHandInfo &Handinfo, const CombinationRank Rank) {
 
     for (auto i : Handinfo.HandCombinations) {
         Handinfo.score = CombinationBaseScore[Rank];
