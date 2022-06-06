@@ -6,6 +6,7 @@
 //
 
 #include <iostream>
+#include <ostream>
 #include <vector>
 #include <algorithm>    // std::shuffle
 #include <random>       // std::default_random_engine
@@ -31,7 +32,9 @@ card::card(cardSuit s, int pips){
 cardSuit card::get_suit() const { return suit; }
 pips card::get_pips_literal() const {return v;}
 int card::get_pips() const { return v.get_pips_value(); }
-void card::set_pips(int vin) { v.set_pips_value(vin); }
+std::string card::print_CardDescription(int key) {
+        return CardDescription[key];
+        }
 
 Combination::Combination(poker::CombinationRank rank, int mepips) {
     combination = rank;
@@ -44,11 +47,7 @@ Combination::Combination(poker::CombinationRank rank, int mepips) {
 
 
 std::ostream &operator<<(std::ostream &out, const pips &p) {
-    if (p.get_pips_value() == 1) { std::cout << "ACE"; }
-    else if (p.get_pips_value() == 11) { std::cout << "JACK"; }
-    else if (p.get_pips_value() == 12) { std::cout << "QUEEN"; }
-    else if (p.get_pips_value() == 13) { std::cout << "KING"; }
-    else { std::cout << p.get_pips_value(); }
+    std::cout << CardDescription[p.get_pips_value()];
     return out;
 }
 std::ostream &operator<<(std::ostream &out, const cardSuit &suit) {
@@ -62,6 +61,7 @@ std::ostream &operator<<(std::ostream &out, const cardSuit &suit) {
 }
 std::ostream &operator<<(std::ostream &out, const card &c) {
     std::cout << c.get_pips_literal();
+    std::cout << " of";
     std::cout << c.get_suit();
     return out;
 }

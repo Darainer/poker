@@ -4,6 +4,7 @@
 
 #ifndef POKER_POKER_H
 #define POKER_POKER_H
+#include <string>
 #endif //POKER_POKER_H
 
 #include <iostream>
@@ -21,7 +22,24 @@ namespace poker {
         CLUB,
         DIAMOND
     };
-    class pips {
+
+    static std::unordered_map< int , std::string> CardDescription {
+        {1,"ACE"},
+        {2,"2"},
+        {3,"3"},
+        {4,"4"},
+        {5,"5"},
+        {6,"6"},
+        {7,"7"},
+        {8,"8"},
+        {9,"9"},
+        {10,"10"},
+        {11,"JACK"},
+        {12,"QUEEN"},
+        {13, "KING"}
+    };
+ 
+     class pips {
     public:
         explicit pips();// : v(0) {}
         explicit pips(int val);//  : v(val) {}
@@ -40,8 +58,7 @@ namespace poker {
         cardSuit get_suit() const;
         int get_pips() const;
         pips get_pips_literal() const;
-        void set_pips(int vin);
-
+        std::string print_CardDescription(int key);
     private:
         cardSuit suit;
         pips v;
