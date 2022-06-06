@@ -132,7 +132,6 @@ namespace poker {
 
         int CalculateCombinationScore(PlayerHandInfo &Handinfo, CombinationRank Rank);
         void checkForStraight();
-
         void checkallMultiples();
         void checkForPair();
         void checkForFlush();
@@ -162,9 +161,10 @@ namespace poker {
         cardDeck Deck;
         std::vector<card> board;
         std::vector<playerHand> PlayerHands;
-        int numberOfPlayers{2};
-        int numberOfCards{2};  //default for texas hold em poker
-        int board_size{5};
+
+        int numberOfPlayers;
+        int numberOfCards;  //default for texas hold em poker
+        int board_size;
 
         void PrintBoard();
     };

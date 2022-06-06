@@ -315,14 +315,12 @@ auto const sortHandByValue = [](playerHand &Hand1,
     return Hand1.getPokerScore() > Hand2.getPokerScore();
 };
 
-cardGame::cardGame() {
+cardGame::cardGame() : numberOfPlayers(2), numberOfCards(5), board_size(5) {
     //default is poker with 4 players
-    numberOfPlayers = 4;
-    numberOfCards = 5;
     setup_new_game();
 }
 
-cardGame::cardGame(int inputNumberOfPlayers, int inNumberOfCards) {
+cardGame::cardGame(int inputNumberOfPlayers, int inNumberOfCards) : board_size(5) {
     numberOfPlayers = inputNumberOfPlayers;
     numberOfCards = inNumberOfCards;
     setup_new_game();

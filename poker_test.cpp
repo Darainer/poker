@@ -2,8 +2,7 @@
 // Created by ryanj on 7/21/2019.
 //
 #include "poker.h"
-#include "googletest/googletest/include/gtest/gtest.h"
-
+#include "gtest/gtest.h"
 using namespace ::poker;
 
 //fixture straight flush
