@@ -5,28 +5,25 @@
 #include "gtest/gtest.h"
 using namespace ::poker;
 
+void Fixture_create_hand(playerHand &hand, cardSuit  &suit, std::vector<int> pips_values ){
+    for(int pips : pips_values) 
+    hand.takeCard(card(suit, pips ));
+}
+
 //fixture straight flush
-void Fixture_straightFlush(playerHand &hand, cardSuit suit) {
-    hand.DealtCards.emplace_back(card(suit, pips(9)));
-    hand.DealtCards.emplace_back(card(suit, pips(10)));
-    hand.DealtCards.emplace_back(card(suit, pips(11)));
-    hand.DealtCards.emplace_back(card(suit, pips(12)));
-    hand.DealtCards.emplace_back(card(suit, pips(13)));
+void Fixture_straightFlush(playerHand &hand, cardSuit &suit) {
+    Fixture_create_hand(hand, suit, {9,10,11,12,13});
 }
 
 void Fixture_royalFlush(playerHand &hand, cardSuit suit) {
-    hand.DealtCards.emplace_back(card(suit, pips(1)));
-    hand.DealtCards.emplace_back(card(suit, pips(10)));
-    hand.DealtCards.emplace_back(card(suit, pips(11)));
-    hand.DealtCards.emplace_back(card(suit, pips(12)));
-    hand.DealtCards.emplace_back(card(suit, pips(13)));
+    Fixture_create_hand(hand, suit, {1,10,11,12,13});
 }
 
 
 TEST(PlayerHand_StraightFlushTest, HandlesZeroInput) {
     playerHand TestStraight;
     for (int i = 1; i != 6; i++) {
-        TestStraight.DealtCards.emplace_back(card(cardSuit::SPADE, pips(i)));
+        TestStraight.takeCard(card(cardSuit::SPADE, pips(i)));
     }
     TestStraight.calculate5CardPokerScore();
     PlayerHandInfo HandInfo = TestStraight.CheckHand();
@@ -36,11 +33,11 @@ TEST(PlayerHand_StraightFlushTest, HandlesZeroInput) {
 }
 TEST(PlayerHand_PairTest, HandlesZeroInput) {
     playerHand TestPair;
-    TestPair.DealtCards.emplace_back(card(cardSuit::SPADE, pips(1)));
-    TestPair.DealtCards.emplace_back(card(cardSuit::HEART, pips(1)));
-    TestPair.DealtCards.emplace_back(card(cardSuit::CLUB, pips(5)));
-    TestPair.DealtCards.emplace_back(card(cardSuit::DIAMOND, pips(9)));
-    TestPair.DealtCards.emplace_back(card(cardSuit::SPADE, pips(7)));
+    TestPair.takeCard(card(cardSuit::SPADE, 1));
+    TestPair.takeCard(card(cardSuit::HEART, 1));
+    TestPair.takeCard(card(cardSuit::CLUB, 5));
+    TestPair.takeCard(card(cardSuit::DIAMOND, 9));
+    TestPair.takeCard(card(cardSuit::SPADE, 7));
     TestPair.calculate5CardPokerScore();
     PlayerHandInfo HandInfo = TestPair.CheckHand();
     EXPECT_EQ(HandInfo.hasPair, true);
@@ -49,11 +46,11 @@ TEST(PlayerHand_PairTest, HandlesZeroInput) {
 
 TEST(PlayerHand_FlushTest, HandlesZeroInput) {
     playerHand testHand;
-    testHand.DealtCards.emplace_back(card(cardSuit::SPADE, pips(0)));
-    testHand.DealtCards.emplace_back(card(cardSuit::SPADE, pips(2)));
-    testHand.DealtCards.emplace_back(card(cardSuit::SPADE, pips(4)));
-    testHand.DealtCards.emplace_back(card(cardSuit::SPADE, pips(7)));
-    testHand.DealtCards.emplace_back(card(cardSuit::SPADE, pips(10)));
+    testHand.takeCard(card(cardSuit::SPADE, 0));
+    testHand.takeCard(card(cardSuit::SPADE, 2));
+    testHand.takeCard(card(cardSuit::SPADE, 4));
+    testHand.takeCard(card(cardSuit::SPADE, 7));
+    testHand.takeCard(card(cardSuit::SPADE, 10));
     testHand.calculate5CardPokerScore();
     PlayerHandInfo HandInfo = testHand.CheckHand();
     EXPECT_EQ(HandInfo.hasFlush, true);
@@ -63,11 +60,11 @@ TEST(PlayerHand_FlushTest, HandlesZeroInput) {
 
 TEST(PlayerHand_Straight_NoFlushTest, HandlesZeroInput) {
     playerHand testHand;
-    testHand.DealtCards.emplace_back(card(cardSuit::SPADE, pips(2)));
-    testHand.DealtCards.emplace_back(card(cardSuit::SPADE, pips(3)));
-    testHand.DealtCards.emplace_back(card(cardSuit::HEART, pips(4)));
-    testHand.DealtCards.emplace_back(card(cardSuit::SPADE, pips(5)));
-    testHand.DealtCards.emplace_back(card(cardSuit::DIAMOND, pips(6)));
+    testHand.takeCard(card(cardSuit::SPADE, 2));
+    testHand.takeCard(card(cardSuit::SPADE, 3));
+    testHand.takeCard(card(cardSuit::HEART, 4));
+    testHand.takeCard(card(cardSuit::SPADE, 5));
+    testHand.takeCard(card(cardSuit::DIAMOND, 6));
     testHand.calculate5CardPokerScore();
     PlayerHandInfo HandInfo = testHand.CheckHand();
     EXPECT_EQ(HandInfo.hasFlush, false);

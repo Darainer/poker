@@ -1,7 +1,3 @@
-//
-// Created by ryanj on 8/14/2019.
-//
-//
 // Created by ryanj on 7/6/2019.
 //
 
@@ -110,13 +106,13 @@ void cardDeck::addOneFullDeck() {
         }
     }
 }
-card cardDeck::dealOneCard(std::vector<card> &destinationHand) {
+card cardDeck::dealOneCard() {
     card dealtCardFromDeck = deck.back();   //todo: learn about move semantics and get rid of the temp copy
-    destinationHand.emplace_back(dealtCardFromDeck);
     deck.pop_back();
+    return dealtCardFromDeck;
 }
 
-void playerHand::takeCardFromDeck(card NewCard) {
+void playerHand::takeCard(card NewCard) {
     DealtCards.emplace_back(NewCard);
 }
 
@@ -150,6 +146,9 @@ void printCards(const std::vector<card> &Cards) {
     }
     std::cout << std::endl;
 }
+std::vector<card> playerHand::showHand(){
+     return DealtCards;
+ }
 
 void playerHand::checkallMultiples() {
 
@@ -271,9 +270,8 @@ void playerHand::checkForRoyalFlush(){
     }
 }
 int playerHand::getHighCard(){
-    std::vector<card>::iterator result;
-    result = std::max_element(DealtCards.begin(), DealtCards.end(), SortCardsByPips);
-    return (*result).get_pips();
+    std::vector<card>::iterator result = std::max_element(DealtCards.begin(), DealtCards.end(), SortCardsByPips);
+    return (*result).get_pips();  // todo Null Ptr check
 }
 PlayerHandInfo const playerHand::CheckHand(){
     return HandInfo;
@@ -343,9 +341,9 @@ void cardGame::calculatePokerScore(){
 }
 
 void cardGame::printPokerScores() const {
-    for (auto i = PlayerHands.begin(); i != PlayerHands.end(); i++) {
-        printCards((*i).DealtCards);                //todo refactor to not reach inside of playerhand
-        std::cout << "score " << i->getPokerScore() << std::endl;
+    for ( auto PlayerHand : PlayerHands) {
+        printCards(PlayerHand.showHand());                //todo refactor to not reach inside of playerhand
+        std::cout << "score " << PlayerHand.getPokerScore() << std::endl;
     }
 }
 
@@ -353,20 +351,7 @@ void cardGame::printPokerScores() const {
 void cardGame::SortHandsByScores(){
     std::sort(PlayerHands.begin(), PlayerHands.end(),sortHandByValue);
 }
-void cardGame::PrintHands() {        //test function
-    printCards(PlayerHands[0].DealtCards);
-    PlayerHands[0].sortByPips();
-    printCards(PlayerHands[0].DealtCards);
-    PlayerHands[0].sortBySuit();
-    printCards(PlayerHands[0].DealtCards);
-    PlayerHands[0].calculate5CardPokerScore();
-    SortHandsByScores();
-    printPokerScores();
-}
 
-void cardGame::PrintBoard() {        //test function
-    printCards(board);
-}
 
 void cardGame::setup_new_game() {
     for (int n = 0; n != numberOfPlayers; n++) {
@@ -381,11 +366,11 @@ void cardGame::setup_new_game() {
 
     for (int i = 0; i != numberOfCards; i++) {
         for (int p = 0; p != numberOfPlayers; p++) {
-            Deck.dealOneCard(PlayerHands[p].DealtCards);
+            PlayerHands[p].takeCard(Deck.dealOneCard());
         }
     }
     for (int it = 0; it != board_size; it++) {
-        Deck.dealOneCard(board);
+        board.emplace_back(Deck.dealOneCard());
     }
     std::cout << "after dealing, deck size is " << Deck.getDeckSize() << std::endl;
 }

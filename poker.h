@@ -118,18 +118,6 @@ namespace poker {
     auto sortCardsBySuit = [](const card &Card1, const card &Card2) -> bool {
         return Card1.get_suit() < Card2.get_suit();};
 
-    class cardDeck {
-    public:
-        cardDeck();
-        explicit cardDeck(int numberOfDecks);
-        void shuffleDeck();
-        int getDeckSize();
-        void addOneFullDeck();
-        card dealOneCard(std::vector<card> &destinationHand);
-
-    private:
-        std::vector<card> deck;
-    };
 
     class playerHand {
     public:
@@ -139,15 +127,16 @@ namespace poker {
         void calculate5CardPokerScore();
         int getPokerScore() const;
 
-        void takeCardFromDeck(card NewCard);
+        void takeCard(card NewCard);
         void printHand();
         PlayerHandInfo const CheckHand();
-        std::vector<card> DealtCards;  //todo make private
+        std::vector<card> showHand();
+        
 
     private:
-        PlayerHandInfo HandInfo;
-
-        int CalculateCombinationScore(PlayerHandInfo &Handinfo, CombinationRank Rank);
+        PlayerHandInfo HandInfo;  // todo: this should be a return value rather than a state in the class
+        std::vector<card> DealtCards;  
+        int CalculateCombinationScore(PlayerHandInfo &Handinfo, CombinationRank Rank); // todo: seperate out all the scoring from the player hand
         void checkForStraight();
         void checkallMultiples();
         void checkForPair();
@@ -159,6 +148,21 @@ namespace poker {
 
 
     };
+
+    class cardDeck {
+    public:
+        cardDeck();
+        explicit cardDeck(int numberOfDecks);
+        void shuffleDeck();
+        int getDeckSize();
+        void addOneFullDeck();
+        card dealOneCard();
+
+    private:
+        std::vector<card> deck;
+    };
+
+
 
     //auto const sortHandByValue = [](playerHand const &Hand1, playerHand const &Hand2) -> bool ;  //todo should be const, find out why it gives error;
 
