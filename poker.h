@@ -4,6 +4,7 @@
 
 #ifndef POKER_POKER_H
 #define POKER_POKER_H
+#include <memory>
 #include <string>
 #endif //POKER_POKER_H
 
@@ -162,6 +163,19 @@ namespace poker {
         std::vector<card> deck;
     };
 
+    class heapDeck {
+    public:
+        heapDeck();
+        explicit heapDeck(int numberOfDecks);
+        ~heapDeck();
+        void shuffleDeck();
+        int getDeckSize();
+        void addOneFullDeck();
+        std::unique_ptr<card> dealOneCard();
+
+    private:
+        std::vector<std::unique_ptr<card>> deck;
+    };
 
 
     //auto const sortHandByValue = [](playerHand const &Hand1, playerHand const &Hand2) -> bool ;  //todo should be const, find out why it gives error;
@@ -189,4 +203,7 @@ namespace poker {
 
         void PrintBoard();
     };
+
+
+
 }

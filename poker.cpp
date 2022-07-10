@@ -2,6 +2,7 @@
 //
 
 #include <iostream>
+#include <memory>
 #include <ostream>
 #include <vector>
 #include <algorithm>    // std::shuffle
@@ -108,6 +109,27 @@ void cardDeck::addOneFullDeck() {
 }
 card cardDeck::dealOneCard() {
     card dealtCardFromDeck = deck.back();   //todo: learn about move semantics and get rid of the temp copy
+    deck.pop_back();
+    return dealtCardFromDeck;
+}
+
+heapDeck::heapDeck(){
+    cardSuit currentSuit{cardSuit::CLUB};
+    for (int suitIterator = 0; suitIterator <= 3; suitIterator++) {
+        currentSuit = static_cast<cardSuit>(suitIterator);
+        for (int i = 1; i <= 13; i++) {
+            deck.emplace_back(std::make_unique<card>(currentSuit, i));
+        }
+    }
+}
+
+void heapDeck::shuffleDeck(){
+        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+        std::shuffle(deck.begin(), deck.end(), std::default_random_engine(seed));
+        }
+
+std::unique_ptr<card> heapDeck::dealOneCard() {
+    std::unique_ptr<card> dealtCardFromDeck  = std::move(deck.back());   //todo: learn about move semantics and get rid of the temp copy
     deck.pop_back();
     return dealtCardFromDeck;
 }
