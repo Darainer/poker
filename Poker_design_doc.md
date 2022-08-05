@@ -1,6 +1,6 @@
 # Elements of the design
 
-### Generic Cards / Player Hand classes seperated from any card game logic
+### Generic Cards / Player Hand classes separated from any card game logic
 
 ### Cards are the core element, usable for any card game (Card library)
 
@@ -14,8 +14,13 @@ Pro: stable, clear ownership and provably no duplication due to unique pointer m
 Contra: non contiguous memory in the player hands will lead to slower sorting or comparison operations
 Neutral: such games will have very low performance and memory requirements relative to the hardware, therefore either option will be fine
 
-### Seperation of the player Hand from the Card Game and score evaluation
-Pro: Card Game logic is specific to each game and can be adapted to 5 card poker, texas holdem or other types of poker
+### Separation of the player Hand from the Card Game and score evaluation
+Pro: Card Game logic is specific to each game and can be adapted to 5 card poker, texas hold-em or other types of poker
 
 
+### Card game as parent class, allowing game dependent variation?
+how much common functionality is there?
+first do a poker game, then a second game and only then refactor into a parent class whatever is common.
 
+### scoring methods: game dependant, game independent?
+-> use free functions in a common namespace for the evaluation of specific hands like "pair", "three of a kind", "flush" etc
